@@ -38,43 +38,82 @@
 // allocate keyframe pool
 a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count)
 {
-	return -1;
+	// malloc the clipframePool?
+
+	// set count
+	keyframePool_out->count = count;
+
+	// allocate memory for keyframes
+	keyframePool_out->keyframe = (a3_Keyframe*) malloc(count * sizeof(a3_Keyframe));
+
+	return 1;
 }
 
 // release keyframe pool
 a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 {
+	// do i release keyframePool too?
+	free(keyframePool->keyframe);
+
 	return -1;
 }
 
 // initialize keyframe
 a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3ui32 value_x)
 {
-	return -1;
+	// set keyframe values
+	keyframe_out->duration = duration;
+	keyframe_out->duration_inverse = duration / 1.0f;
+	keyframe_out->data = value_x;
+
+	return 1;
 }
 
 
 // allocate clip pool
 a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count)
 {
-	return -1;
+	// malloc the clipPool?
+
+	// set count
+	clipPool_out->count = count;
+
+	// allocate memory for keyframes
+	clipPool_out->clip = (a3_Keyframe*)malloc(count * sizeof(a3_Clip));
+
+	return 1;
 }
 
 // release clip pool
 a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 {
-	return -1;
+	// do i release clipPool too?
+	free(clipPool->clip);
+
+	return 1;
 }
 
 // initialize clip with first and last indices
 a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex)
 {
-	return -1;
+	// set variables
+	clip_out->name = clipName;
+	clip_out->keyframePool = keyframePool;
+	clip_out->first_keyframe = firstKeyframeIndex;
+	clip_out->last_keyframe = finalKeyframeIndex;
+
+	return 1;
 }
 
 // get clip index from pool
 a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3keyframeAnimation_nameLenMax])
 {
+	// loop through clips and check for correct name
+	for (a3i32 i = 0; i < clipPool->count; i++)
+		if (clipPool->clip[i].name == clipName)
+			return clipName;
+
+	// return -1 if didn't find correct clip
 	return -1;
 }
 
