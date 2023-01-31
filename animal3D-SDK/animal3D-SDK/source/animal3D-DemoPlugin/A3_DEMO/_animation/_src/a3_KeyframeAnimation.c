@@ -98,7 +98,7 @@ a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_na
 {
 	// set variables
 	strncpy(clip_out->name, clipName, a3keyframeAnimation_nameLenMax);
-	clip_out->keyframePool = keyframePool;
+	clip_out->keyframe_pool = keyframePool;
 	clip_out->first_keyframe = firstKeyframeIndex;
 	clip_out->last_keyframe = finalKeyframeIndex;
 
