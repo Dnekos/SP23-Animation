@@ -32,12 +32,88 @@
 // update clip controller
 inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt)
 {
-	return -1;
+	//Pre-resolution 
+
+	//Ensure we are taking in a positive time step.
+	if (dt < 0) return -1;
+
+	//Apply time step to increment keyframe time and clip time by the time step.
+	clipCtrl->keyframe_time += dt * clipCtrl->playback_direction;
+	clipCtrl->clip_time += dt * clipCtrl->playback_direction;
+
+	//Stand-in variable for our current clip in the clip pool.
+	a3_Clip* current_clip = &clipCtrl->clip_pool->clip[clipCtrl->clip];
+
+	//Resolution
+
+	//Use our playback direction (1 is forward, -1 is reverse, 0 is stopped)
+	//to determine the new keyframe time and clip time
+	//Handle all 7 cases for playback
+	if (clipCtrl->playback_direction == 1) 
+	{
+		//Forward
+		//Case: Forward && Forward Skip
+		//Advance to next keyframe time and increment keyframe index
+		while (clipCtrl->keyframe_time >= current_clip->keyframe_pool->keyframe[clipCtrl->keyframe].duration && clipCtrl->keyframe <= current_clip->last_keyframe) 
+		{
+			clipCtrl->keyframe_time -= current_clip->keyframe_pool->keyframe[clipCtrl->keyframe].duration;
+			clipCtrl->keyframe++;
+		}
+		//Case: Forward Terminus
+		//If passed end of clip, set clip time to start of clip by subtracting clip duration from clip time
+		//Set keyframe index to first keyframe in clip
+		if (clipCtrl->clip_time >= current_clip->duration)
+		{
+			clipCtrl->clip_time -= current_clip->duration;
+			//clipCtrl->clip = 0;
+			clipCtrl->keyframe = current_clip->first_keyframe;
+		}
+	}
+	else if (clipCtrl->playback_direction == -1) 
+	{
+		//Reverse
+		//Case: Reverse && Reverse Skip
+		//Rewind to last keyframe time and decrement keyframe index
+		while (clipCtrl->keyframe_time < current_clip->keyframe_pool->keyframe[clipCtrl->keyframe].duration && clipCtrl->keyframe >= current_clip->first_keyframe)
+		{
+			clipCtrl->keyframe_time += current_clip->keyframe_pool->keyframe[clipCtrl->keyframe].duration;
+			clipCtrl->keyframe--;
+		}
+		//Case: Reverse Terminus
+		//If reached start of clip, set clip time to end of clip by adding clip duration to clip time
+		//Set keyframe index to last keyframe in clip
+		if (clipCtrl->clip_time < current_clip->duration)
+		{
+			clipCtrl->clip_time += current_clip->duration;
+			//clipCtrl->clip = ;
+			clipCtrl->keyframe = current_clip->last_keyframe;
+		}
+	}
+	//Stopped
+	//Case: Paused
+	else if (clipCtrl->playback_direction == 0) 
+	{
+		
+	}
+	//Unresolved Case
+	else 
+	{
+		return -1;
+	}
+
+	//Post-Resolution
+	
+	//Normalize keyframe and clip time/parameters
+	clipCtrl->keyframe_param = clipCtrl->keyframe_time *= current_clip->duration_inverse;
+	clipCtrl->clip_param = clipCtrl->clip_time *= current_clip->duration_inverse;
+
+	return 1;
 }
 
 // set clip to play
 inline a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool)
 {
+
 	return -1;
 }
 
