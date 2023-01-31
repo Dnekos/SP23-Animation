@@ -119,7 +119,7 @@ struct a3_Clip
 
 	// pointer to the pool of keyframes containing those included in the set; 
 	// within the array, the clip will be the sequence of keyframes from first to last.
-	a3_KeyframePool* keyframePool;
+	const a3_KeyframePool* keyframePool;
 };
 
 // group of clips

@@ -79,7 +79,7 @@ a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count)
 	clipPool_out->count = count;
 
 	// allocate memory for keyframes
-	clipPool_out->clip = (a3_Keyframe*)malloc(count * sizeof(a3_Clip));
+	clipPool_out->clip = (a3_Clip*)malloc(count * sizeof(a3_Clip));
 
 	return 1;
 }
@@ -97,7 +97,7 @@ a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex)
 {
 	// set variables
-	clip_out->name = clipName;
+	strncpy(clip_out->name, clipName, a3keyframeAnimation_nameLenMax);
 	clip_out->keyframePool = keyframePool;
 	clip_out->first_keyframe = firstKeyframeIndex;
 	clip_out->last_keyframe = finalKeyframeIndex;
@@ -109,9 +109,9 @@ a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_na
 a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3keyframeAnimation_nameLenMax])
 {
 	// loop through clips and check for correct name
-	for (a3i32 i = 0; i < clipPool->count; i++)
+	for (a3ui32 i = 0; i < clipPool->count; i++)
 		if (clipPool->clip[i].name == clipName)
-			return clipName;
+			return i;
 
 	// return -1 if didn't find correct clip
 	return -1;
