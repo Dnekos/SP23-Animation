@@ -46,6 +46,7 @@ typedef struct a3_ClipController			a3_ClipController;
 // metaphor: playhead
 struct a3_ClipController
 {
+	//clip controller name
 	a3byte name[a3keyframeAnimation_nameLenMax];
 
 	//index of clip to control in referenced clip.
@@ -67,7 +68,7 @@ struct a3_ClipController
 	a3real keyframe_param;
 
 	//the active behavior of playback
-	a3ui16 playback_direction;
+	a3i16 playback_direction;
 
 	//pointer (C/C++) or reference (C#) to the pool of clips that the controller will ultimately control
 	const a3_ClipPool *clip_pool;

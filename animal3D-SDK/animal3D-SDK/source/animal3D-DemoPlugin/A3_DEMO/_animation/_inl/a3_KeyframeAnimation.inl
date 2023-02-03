@@ -33,7 +33,7 @@
 inline a3i32 a3clipCalculateDuration(a3_Clip* clip)
 {
 	// error checking keyframes are valid
-	if (clip->first_keyframe >= clip->last_keyframe)
+	if ((clip->first_keyframe >= clip->last_keyframe) || !clip)
 		return -1;
 
 	// loop through keyframes and sum up durations
@@ -57,7 +57,7 @@ inline a3i32 a3clipCalculateDuration(a3_Clip* clip)
 inline a3i32 a3clipDistributeDuration(a3_Clip* clip, const a3real newClipDuration)
 {
 	// checking that duration is valid
-	if (newClipDuration <= 0)
+	if ((newClipDuration <= 0) || !clip)
 		return -1;
 
 	// assigning duration to clip

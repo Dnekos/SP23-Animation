@@ -34,6 +34,8 @@
 #include "../a3_DemoState.h"
 
 #include "../_a3_demo_utilities/a3_DemoMacros.h"
+//#include "A3_DEMO/_animation/a3_KeyframeAnimation.h"
+//#include "A3_DEMO/_animation/a3_KeyframeAnimationController.h"
 
 
 //-----------------------------------------------------------------------------
@@ -56,6 +58,9 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	// active camera
 	a3_DemoProjector const* activeCamera = demoMode->projector + demoMode->activeCamera;
 	a3_DemoSceneObject const* activeCameraObject = activeCamera->sceneObject;
+
+	//active clip controller
+	//a3_ClipController const* activeClipController = demoMode->clipController;
 
 	// temp scale mat
 	a3mat4 scaleMat = a3mat4_identity;
@@ -83,6 +88,8 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 			activeCamera->projectionMat.m, activeCameraObject->modelMat.m, activeCameraObject->modelMatInv.m,
 			demoMode->object_scene[i].modelMat.m, a3mat4_identity.m);
 	}
+
+	//a3clipControllerUpdate(activeClipController, dt);
 }
 
 

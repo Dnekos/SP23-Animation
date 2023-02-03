@@ -83,6 +83,9 @@ void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3
 {
 	a3_DemoProjector* projector = demoMode->projector + demoMode->activeCamera;
 
+	//active clip controller
+	//a3_ClipController const* activeClipController = demoMode->clipController;
+
 	// right click to ray pick
 	if (a3mouseGetState(demoState->mouse, a3mouse_right) == a3input_down)
 	{
@@ -107,6 +110,35 @@ void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3
 	// move camera
 	a3demo_input_controlProjector(demoState, projector,
 		dt, projector->ctrlMoveSpeed, projector->ctrlRotateSpeed, projector->ctrlZoomSpeed);
+
+	//Select Clip Controller to Edit
+	//Cycle through the three clip controllers by index
+	//On 'k' or 'l' press, increment or decrement clip controller index value by one
+	//When we reach the first or last index, jump back to end or start?
+
+	//Play/Pause controller playback
+	//On 'SPACEBAR' press get playback_direction = activeClipController.playback_direction
+	//If (playback_direction == 1 || -1) store this value then set it to 0
+	//else (playback_direction == 0) set this to stored value
+
+	//Set to first/last frame in current clip
+	//On 'u' or 'U' press get current_keyframe = activeClipController.clip_pool->clip[activeClipController.clip].keyframe_pool->keyframe[activeClipController.keyframe]
+	//if('u') current_keyframe = activeClipController.clip_pool->clip[activeClipController.clip].first_keyframe
+	//else if('U') current_keyframe = activeClipController.clip_pool->clip[activeClipController.clip].last_keyframe
+
+	//Change clip to control
+	//Get name of clip we want to control
+	//Use get clip index function using clip name
+	//Use set clip to play function using clip index
+
+	//Flip Playback Direction
+	//On 'y' press get playback_direction = activeClipController.playback_direction
+	//if(playback_direction == 0) do nothing
+	//else if(playback_direction == 1) playback_direction = -1
+	//else if(playback_direction == -1) playback_direction = 1
+
+	//Slow-motion (multiply the time step by a factor of less than one)
+	//Multiply playback_direction by 0.5?
 }
 
 

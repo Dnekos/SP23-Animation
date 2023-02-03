@@ -34,11 +34,12 @@
 
 
 //-----------------------------------------------------------------------------
+//VALIDATE
 
 // allocate keyframe pool
 a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count)
 {
-	
+	if (count < 0) return -1;
 
 	// set count
 	keyframePool_out->count = count;
@@ -52,6 +53,7 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 // release keyframe pool
 a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 {
+	if (!keyframePool) return -1;
 	free(keyframePool->keyframe);
 
 	return -1;
@@ -60,6 +62,7 @@ a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 // initialize keyframe
 a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3ui32 value_x)
 {
+	if (!keyframe_out || duration <= 0) return -1;
 	// set keyframe values
 	keyframe_out->duration = duration;
 	keyframe_out->duration_inverse = duration / 1.0f;
@@ -72,7 +75,7 @@ a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3u
 // allocate clip pool
 a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count)
 {
-	// malloc the clipPool?
+	if (count < 0) return -1;
 
 	// set count
 	clipPool_out->count = count;
@@ -86,7 +89,8 @@ a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count)
 // release clip pool
 a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 {
-	// do i release clipPool too?
+	if (!clipPool) return -1;
+
 	free(clipPool->clip);
 
 	return 1;
@@ -95,6 +99,7 @@ a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 // initialize clip with first and last indices
 a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex)
 {
+	if (!clip_out || !keyframePool || firstKeyframeIndex < 0 || finalKeyframeIndex < 0 || firstKeyframeIndex > finalKeyframeIndex) return -1;
 	// set variables
 	strncpy(clip_out->name, clipName, a3keyframeAnimation_nameLenMax);
 	clip_out->keyframe_pool = keyframePool;
@@ -107,6 +112,7 @@ a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_na
 // get clip index from pool
 a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3keyframeAnimation_nameLenMax])
 {
+	if (!clipPool) return -1;
 	// loop through clips and check for correct name
 	for (a3ui32 i = 0; i < clipPool->count; i++)
 		if (clipPool->clip[i].name == clipName)
