@@ -32,7 +32,7 @@
 // calculate clip duration as sum of keyframes' durations
 inline a3i32 a3clipCalculateDuration(a3_Clip* clip)
 {
-	// error checking kyeframes are valid
+	// error checking keyframes are valid
 	if (clip->first_keyframe >= clip->last_keyframe)
 		return -1;
 
@@ -49,7 +49,7 @@ inline a3i32 a3clipCalculateDuration(a3_Clip* clip)
 	clip->duration = tot_duration;
 	clip->duration_inverse = 1 / tot_duration;
 
-	// i feel this should be a float but whatever
+	// return duration
 	return (a3i32)tot_duration;
 }
 

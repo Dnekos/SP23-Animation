@@ -45,6 +45,9 @@
 
 #include "a3_DemoMode0_Starter.h"
 
+//#include "_animation/a3_KeyframeAnimation.h"
+//#include "_animation/a3_KeyframeAnimationController.h"
+
 
 //-----------------------------------------------------------------------------
 
@@ -178,6 +181,9 @@ struct a3_DemoState
 	a3boolean updateAnimation;
 	a3boolean stencilTest;
 	a3boolean skipIntermediatePasses;
+
+	//Animation Clip Controller
+	//a3_ClipController clipCtrl;
 
 
 	//-------------------------------------------------------------------------

@@ -135,6 +135,8 @@ void a3demo_update(a3_DemoState *demoState, a3f64 const dt)
 {
 	demoState->demoModeCallbacksPtr->handleUpdate(demoState,
 		demoState->demoModeCallbacksPtr->demoMode, dt);
+
+	//a3clipControllerUpdate(&demoState->clipCtrl, dt);
 }
 
 

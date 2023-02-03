@@ -216,6 +216,29 @@ void a3demo_input(a3_DemoState* demoState, a3f64 const dt)
 	if (demoState->demoModeCallbacksPtr->handleInput)
 		demoState->demoModeCallbacksPtr->handleInput(demoState,
 			demoState->demoModeCallbacksPtr->demoMode, dt);
+
+	//Select Clip Controller to Edit
+
+	//Play/Pause controller playback
+	//On 'SPACEBAR' press get playback_direction = demoState->clipCtrl.playback_direction
+	//If (playback_direction == 1 || -1) store this value then set it to 0
+	//else (playback_direction == 0) set this to stored value
+
+	//Set to first/last frame in current clip
+	//On 'u' or 'U' press get current_keyframe = demoState->clipCtrl.clip_pool->clip[demoState->clipCtrl.clip].keyframe_pool->keyframe[demoState->clipCtrl.keyframe]
+	//if('u') current_keyframe = demoState->clipCtrl.clip_pool->clip[demoState->clipCtrl.clip].first_keyframe
+	//else if('U') current_keyframe = demoState->clipCtrl.clip_pool->clip[demoState->clipCtrl.clip].last_keyframe
+
+	//Change clip to control
+
+	//Flip Playback Direction
+	//On 'y' press get playback_direction = demoState->clipCtrl.playback_direction
+	//if(playback_direction == 0) do nothing
+	//else if(playback_direction == 1) playback_direction = -1
+	//else if(playback_direction == -1) playback_direction = 1
+
+	//Slow-motion (multiply the time step by a factor of less than one)
+	
 }
 
 

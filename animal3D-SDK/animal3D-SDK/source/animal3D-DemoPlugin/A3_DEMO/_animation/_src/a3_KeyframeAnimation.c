@@ -38,7 +38,7 @@
 // allocate keyframe pool
 a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count)
 {
-	// malloc the clipframePool?
+	
 
 	// set count
 	keyframePool_out->count = count;
@@ -52,7 +52,6 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 // release keyframe pool
 a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 {
-	// do i release keyframePool too?
 	free(keyframePool->keyframe);
 
 	return -1;
