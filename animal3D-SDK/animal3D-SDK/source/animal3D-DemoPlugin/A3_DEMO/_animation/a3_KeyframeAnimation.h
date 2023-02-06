@@ -40,6 +40,7 @@ typedef struct a3_Keyframe					a3_Keyframe;
 typedef struct a3_KeyframePool				a3_KeyframePool;
 typedef struct a3_Clip						a3_Clip;
 typedef struct a3_ClipPool					a3_ClipPool;
+typedef struct a3_ClipTransition			a3_ClipTransition;
 #endif	// __cplusplus
 
 
@@ -92,6 +93,24 @@ a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3u
 
 //-----------------------------------------------------------------------------
 
+// data structure to describe a transition action
+// Upon reaching or passing either terminus of a clip, 
+// the controller should read the transition and follow its instructions
+struct a3_ClipTransition
+{
+	// pointer to the pool of clips that contain the target clip
+	const a3_ClipPool* clip_pool;
+
+	// index of target clip in clip pool
+	const a3ui32 clipIndex_pool;
+
+	// current time relative to start of clip
+	a3real clip_time;
+
+	// the active behavior of playback (forward, reverse, or stopped)
+	a3i16 playback_direction;
+};
+
 // description of single clip
 // metaphor: timeline
 struct a3_Clip
@@ -116,6 +135,12 @@ struct a3_Clip
 	a3ui32 first_keyframe;
 	// index of last keyframe in pool referenced by clip (see below)
 	a3ui32 last_keyframe;
+
+	// triggered when playing forward and the controller passes the end of a clip
+	a3_ClipTransition* forward_transition;
+
+	// triggered when playing forward and the controller passes the end of a clip
+	a3_ClipTransition* reverse_transition;
 
 	// pointer to the pool of keyframes containing those included in the set; 
 	// within the array, the clip will be the sequence of keyframes from first to last.

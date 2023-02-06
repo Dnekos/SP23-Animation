@@ -66,6 +66,9 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			{
 				clipCtrl->clip_time -= current_clip->duration;
 				clipCtrl->keyframe = current_clip->first_keyframe;
+				// I don't think this is right, but maybe?
+				/*a3clipControllerSetClip(clipCtrl, current_clip->forward_transition->clip_pool, 
+					current_clip->forward_transition->clipIndex_pool);*/
 			}
 		}
 	}
@@ -85,6 +88,9 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			{
 				clipCtrl->clip_time += current_clip->duration;
 				clipCtrl->keyframe = current_clip->last_keyframe;
+				// I don't think this is right, but maybe?
+				/*a3clipControllerSetClip(clipCtrl, current_clip->reverse_transition->clip_pool,
+					current_clip->reverse_transition->clipIndex_pool);*/
 			}
 		}
 	}
