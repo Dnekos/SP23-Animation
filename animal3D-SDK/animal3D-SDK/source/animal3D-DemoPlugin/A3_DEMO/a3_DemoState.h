@@ -298,6 +298,8 @@ struct a3_DemoState
 		};
 	};
 
+	a3_TextureAtlas texture_atlas;
+
 
 	// framebuffers
 	union {

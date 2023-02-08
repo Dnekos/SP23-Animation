@@ -685,6 +685,9 @@ void a3demo_loadTextures(a3_DemoState* demoState)
 		a3textureChangeRepeatMode(a3tex_repeatClamp, a3tex_repeatClamp);	// clamp both axes
 	}
 
+	a3textureAtlasSetTexture(&demoState->texture_atlas, demoState->tex_testsprite);
+	a3textureAtlasAllocateEvenCells(&demoState->texture_atlas, 8, 8);
+
 
 	// done
 	a3textureDeactivate(a3tex_unit00);
@@ -758,10 +761,10 @@ void a3demo_loadAnimation(a3_DemoState* demoState)
 	{
 		demoState->keyframePool->keyframe[i].data = i;
 	}
-	a3_Clip a;
+	//a3_Clip a;
 
 	// create clip
-	a3clipInit(&demoState->clipPool->clip[0], "first", demoState->clipPool->clip, 0, 7);
+	a3clipInit(&demoState->clipPool->clip[0], "first", demoState->clipPool->clip[0].keyframe_pool, 0, 7);
 
 	// set index, shouldn't this be in the array?
 	demoState->clipPool->clip[0].index = 0;

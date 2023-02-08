@@ -359,7 +359,14 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 				// send data and draw
 				i = (j * 2 + 11) % hueCount;
 				currentDrawable = drawable[currentSceneObject - demoMode->obj_skybox];
-				a3textureActivate(texture_dm[j], a3tex_unit00);
+				if (currentSceneObject == demoMode->obj_plane)
+				{
+					a3textureActivate(demoState->texture_atlas.texture, a3tex_unit00);
+				}
+				else 
+				{
+					a3textureActivate(texture_dm[j], a3tex_unit00);
+				}
 				a3real4x4Product(modelViewProjectionMat.m, viewProjectionMat.m, currentSceneObject->modelMat.m);
 				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, modelViewProjectionMat.mm);
 				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rgba4[i].v);
