@@ -45,6 +45,8 @@
 
 #include "a3_DemoMode0_Starter.h"
 
+#include "A3_DEMO/_animation/a3_KeyframeAnimationController.h"
+
 //#include "_animation/a3_KeyframeAnimation.h"
 //#include "_animation/a3_KeyframeAnimationController.h"
 
@@ -311,6 +313,12 @@ struct a3_DemoState
 
 	// managed objects, no touchie
 	a3_VertexDrawable dummyDrawable[1];
+
+
+	// animation hee hoos
+	a3_ClipController controller[1];
+	a3_ClipPool clipPool[3];
+	a3_KeyframePool keyframePool[16];
 
 
 	//-------------------------------------------------------------------------

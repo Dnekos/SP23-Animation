@@ -751,6 +751,25 @@ void a3demo_loadFramebuffers(a3_DemoState* demoState)
 	a3textureDeactivate(a3tex_unit00);
 }
 
+void a3demo_loadAnimation(a3_DemoState* demoState)
+{
+	// set up keyframe values
+	for (int i = 0; i < 16; i++)
+	{
+		demoState->keyframePool->keyframe[i].data = i;
+	}
+	a3_Clip a;
+
+	// create clip
+	a3clipInit(&demoState->clipPool->clip[0], "first", demoState->clipPool->clip, 0, 7);
+
+	// set index, shouldn't this be in the array?
+	demoState->clipPool->clip[0].index = 0;
+
+	// set length of clip
+	a3clipDistributeDuration(&demoState->clipPool->clip[0], 2);
+
+}
 
 //-----------------------------------------------------------------------------
 

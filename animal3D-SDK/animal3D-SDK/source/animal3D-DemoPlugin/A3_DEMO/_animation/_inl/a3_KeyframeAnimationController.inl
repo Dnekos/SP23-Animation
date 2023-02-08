@@ -64,11 +64,15 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			//Set keyframe index to first keyframe in clip
 			if (clipCtrl->clip_time >= current_clip->duration && clipCtrl->keyframe == current_clip->last_keyframe)
 			{
+				// set new clip, if there is one
+				if (current_clip->forward_transition)
+					a3clipControllerSetClip(clipCtrl, current_clip->forward_transition->clip_pool, 
+						current_clip->forward_transition->clipIndex_pool);
+
+
 				clipCtrl->clip_time -= current_clip->duration;
 				clipCtrl->keyframe = current_clip->first_keyframe;
-				// I don't think this is right, but maybe?
-				/*a3clipControllerSetClip(clipCtrl, current_clip->forward_transition->clip_pool, 
-					current_clip->forward_transition->clipIndex_pool);*/
+				
 			}
 		}
 	}
@@ -86,11 +90,14 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			//Set keyframe index to last keyframe in clip
 			if (clipCtrl->clip_time < current_clip->duration && clipCtrl->keyframe == current_clip->first_keyframe)
 			{
+				// set new clip, if there is one
+				if (current_clip->reverse_transition)
+					a3clipControllerSetClip(clipCtrl, current_clip->reverse_transition->clip_pool,
+						current_clip->reverse_transition->clipIndex_pool);
+
 				clipCtrl->clip_time += current_clip->duration;
 				clipCtrl->keyframe = current_clip->last_keyframe;
-				// I don't think this is right, but maybe?
-				/*a3clipControllerSetClip(clipCtrl, current_clip->reverse_transition->clip_pool,
-					current_clip->reverse_transition->clipIndex_pool);*/
+
 			}
 		}
 	}
