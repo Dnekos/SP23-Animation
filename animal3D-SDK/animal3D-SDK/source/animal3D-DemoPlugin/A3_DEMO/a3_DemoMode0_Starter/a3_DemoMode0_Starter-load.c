@@ -179,6 +179,7 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	for (int i = 0; i < 64; i++)
 	{
 		demoMode->keyframePool->keyframe[i].data = i;
+		demoMode->keyframePool->keyframe[i].index = i;
 	}
 
 	// create clip
@@ -193,11 +194,16 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	a3clipTransitionInit(&demoMode->clipPool->clip[0].forward_transition, demoMode->clipPool, 1);
 
 	// create second clip
-	a3clipInit(&demoMode->clipPool->clip[1], "second", demoMode->keyframePool, 8, 9);
+	a3clipInit(&demoMode->clipPool->clip[1], "second", demoMode->keyframePool, 8, 15);
 	demoMode->clipPool->clip[1].index = 1;
 	a3clipDistributeDuration(&demoMode->clipPool->clip[1], 2);
 	a3clipTransitionInit(&demoMode->clipPool->clip[1].forward_transition, demoMode->clipPool, 0);
 
+
+	// set clip on controller
+	a3clipControllerSetClip(demoMode->clipController, demoMode->clipPool, demoMode->clipPool->clip[0].index);
+	// play forward
+	demoMode->clipController->playback_direction = 1;
 }
 
 
