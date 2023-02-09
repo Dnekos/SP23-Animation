@@ -173,6 +173,7 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	// create pools
 	a3keyframePoolCreate(demoMode->keyframePool, 16);
 	a3clipPoolCreate(demoMode->clipPool, 2);
+	a3clipControllerInit(demoMode->clipController, "main", demoMode->clipPool, 0);
 
 	// set up keyframe values
 	for (int i = 0; i < 64; i++)
@@ -181,7 +182,7 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	}
 
 	// create clip
-	a3clipInit(&demoMode->clipPool->clip[0], "first", demoMode->clipPool->clip, 0, 7);
+	a3clipInit(&demoMode->clipPool->clip[0], "first", demoMode->keyframePool, 0, 7);
 
 	// set index, shouldn't this be in the array?
 	demoMode->clipPool->clip[0].index = 0;
@@ -189,13 +190,13 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	// set length of clip
 	a3clipDistributeDuration(&demoMode->clipPool->clip[0], 2);
 
-	a3clipTransitionInit(&demoMode->clipPool->clip[0].forward_transition, demoMode->keyframePool, 1);
+	a3clipTransitionInit(&demoMode->clipPool->clip[0].forward_transition, demoMode->clipPool, 1);
 
 	// create second clip
-	a3clipInit(&demoMode->clipPool->clip[1], "second", demoMode->clipPool->clip, 8, 9);
+	a3clipInit(&demoMode->clipPool->clip[1], "second", demoMode->keyframePool, 8, 9);
 	demoMode->clipPool->clip[1].index = 1;
 	a3clipDistributeDuration(&demoMode->clipPool->clip[1], 2);
-	a3clipTransitionInit(&demoMode->clipPool->clip[1].forward_transition, demoMode->keyframePool, 0);
+	a3clipTransitionInit(&demoMode->clipPool->clip[1].forward_transition, demoMode->clipPool, 0);
 
 }
 

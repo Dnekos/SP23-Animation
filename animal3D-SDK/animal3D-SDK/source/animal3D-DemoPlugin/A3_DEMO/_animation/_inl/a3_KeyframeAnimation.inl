@@ -78,12 +78,6 @@ inline a3i32 a3clipDistributeDuration(a3_Clip* clip, const a3real newClipDuratio
 	// return duration
 	return (a3i32)clip->duration;
 }
-
-a3i32 a3clipTransitionInit(a3_ClipTransition* clipTransition_out, const a3_ClipPool* clipPool, const a3ui32 clip_index)
-{
-	clipTransition_out->clipIndex_pool = clip_index;
-	clipTransition_out->clip_pool = clipPool;
-}
 //-----------------------------------------------------------------------------
 
 

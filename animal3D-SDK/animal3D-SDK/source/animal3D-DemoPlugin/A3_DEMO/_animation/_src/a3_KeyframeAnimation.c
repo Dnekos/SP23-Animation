@@ -71,6 +71,15 @@ a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3u
 	return 1;
 }
 
+a3i32 a3clipTransitionInit(a3_ClipTransition* clipTransition_out, const a3_ClipPool* clipPool, const a3ui32 clip_index)
+{
+	if (!clipTransition_out || !clipPool || clip_index < 0) return -1;
+
+	clipTransition_out->clipIndex_pool = clip_index;
+	clipTransition_out->clip_pool = clipPool;
+	return 1;
+}
+
 
 // allocate clip pool
 a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count)

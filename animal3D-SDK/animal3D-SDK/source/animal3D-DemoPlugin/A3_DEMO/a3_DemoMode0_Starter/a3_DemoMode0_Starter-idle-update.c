@@ -27,6 +27,7 @@
 */
 
 //-----------------------------------------------------------------------------
+#include <stdio.h> 
 
 #include "../a3_DemoMode0_Starter.h"
 
@@ -89,7 +90,8 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 			demoMode->object_scene[i].modelMat.m, a3mat4_identity.m);
 	}
 
-	//a3clipControllerUpdate(activeClipController, dt);
+	a3clipControllerUpdate(demoMode->clipController, (a3real)dt);
+	printf("current clip: %s, current frame: %i", demoMode->clipController[0].clip_pool->clip[demoMode->clipController->clip].name, demoMode->clipController[0].keyframe);
 }
 
 

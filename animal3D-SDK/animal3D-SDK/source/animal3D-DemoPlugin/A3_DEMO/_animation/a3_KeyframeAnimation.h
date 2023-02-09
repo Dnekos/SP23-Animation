@@ -112,7 +112,7 @@ struct a3_ClipTransition
 };
 
 // allocate clip pool
-a3i32 a3clipTransitionInit(a3_ClipTransition* clipTransition_out, a3_ClipPool* clipPool, const a3ui32 clip_index);
+a3i32 a3clipTransitionInit(a3_ClipTransition* clipTransition_out, const a3_ClipPool* clipPool, const a3ui32 clip_index);
 
 //-----------------------------------------------------------------------------
 
