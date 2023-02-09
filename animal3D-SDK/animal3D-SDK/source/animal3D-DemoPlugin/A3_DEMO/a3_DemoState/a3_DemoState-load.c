@@ -756,12 +756,16 @@ void a3demo_loadFramebuffers(a3_DemoState* demoState)
 
 void a3demo_loadAnimation(a3_DemoState* demoState)
 {
+	/*  MOVED TO DEMOMODE LOAD
+	// create pools
+	a3keyframePoolCreate(demoState->keyframePool, 16);
+	a3clipPoolCreate(demoState->clipPool, 2);
+
 	// set up keyframe values
 	for (int i = 0; i < 16; i++)
 	{
 		demoState->keyframePool->keyframe[i].data = i;
 	}
-	//a3_Clip a;
 
 	// create clip
 	a3clipInit(&demoState->clipPool->clip[0], "first", demoState->clipPool->clip[0].keyframe_pool, 0, 7);
@@ -772,6 +776,15 @@ void a3demo_loadAnimation(a3_DemoState* demoState)
 	// set length of clip
 	a3clipDistributeDuration(&demoState->clipPool->clip[0], 2);
 
+
+	demoState->clipPool->clip[0].forward_transition = (a3_ClipTransition) {.clip_pool = demoState->keyframePool, .clipIndex_pool = 1, .clip_time = 0, .playback_direction = 1};
+
+	// create second clip
+	a3clipInit(&demoState->clipPool->clip[0], "second", demoState->clipPool->clip, 8, 9);
+	demoState->clipPool->clip[0].index = 0;
+	a3clipDistributeDuration(&demoState->clipPool->clip[0], 2);
+
+	*/
 }
 
 //-----------------------------------------------------------------------------

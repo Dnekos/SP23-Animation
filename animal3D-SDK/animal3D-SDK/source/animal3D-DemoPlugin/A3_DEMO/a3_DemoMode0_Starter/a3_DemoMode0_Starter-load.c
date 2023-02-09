@@ -167,6 +167,36 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 
 	demoMode->targetCount[starter_passScene] = starter_target_scene_max;
 	demoMode->targetCount[starter_passComposite] = 1;
+
+
+	// LOAD ANIMATION
+	// create pools
+	a3keyframePoolCreate(demoMode->keyframePool, 16);
+	a3clipPoolCreate(demoMode->clipPool, 2);
+
+	// set up keyframe values
+	for (int i = 0; i < 64; i++)
+	{
+		demoMode->keyframePool->keyframe[i].data = i;
+	}
+
+	// create clip
+	a3clipInit(&demoMode->clipPool->clip[0], "first", demoMode->clipPool->clip, 0, 7);
+
+	// set index, shouldn't this be in the array?
+	demoMode->clipPool->clip[0].index = 0;
+
+	// set length of clip
+	a3clipDistributeDuration(&demoMode->clipPool->clip[0], 2);
+
+	a3clipTransitionInit(&demoMode->clipPool->clip[0].forward_transition, demoMode->keyframePool, 1);
+
+	// create second clip
+	a3clipInit(&demoMode->clipPool->clip[1], "second", demoMode->clipPool->clip, 8, 9);
+	demoMode->clipPool->clip[1].index = 1;
+	a3clipDistributeDuration(&demoMode->clipPool->clip[1], 2);
+	a3clipTransitionInit(&demoMode->clipPool->clip[1].forward_transition, demoMode->keyframePool, 0);
+
 }
 
 

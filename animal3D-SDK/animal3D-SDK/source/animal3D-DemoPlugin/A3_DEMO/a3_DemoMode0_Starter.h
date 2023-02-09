@@ -162,17 +162,19 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 			};
 		};
 
-		/*union {
+
+
+		union {
 			a3_ClipController clipController[starterMaxCount_clipController];
 			struct {
 				a3_ClipController 
 					clipController_main[1];
-				a3_ClipPool
-					clip_pool[5];
-				a3_KeyframePool
-					keyframe_pool[20];
 			};
-		};*/
+		};
+		a3_ClipPool
+			clipPool[5];
+		a3_KeyframePool
+			keyframePool[20];
 	};
 
 

@@ -102,7 +102,7 @@ struct a3_ClipTransition
 	const a3_ClipPool* clip_pool;
 
 	// index of target clip in clip pool
-	const a3ui32 clipIndex_pool;
+	a3ui32 clipIndex_pool;
 
 	// current time relative to start of clip
 	a3real clip_time;
@@ -110,6 +110,12 @@ struct a3_ClipTransition
 	// the active behavior of playback (forward, reverse, or stopped)
 	a3i16 playback_direction;
 };
+
+// allocate clip pool
+a3i32 a3clipTransitionInit(a3_ClipTransition* clipTransition_out, a3_ClipPool* clipPool, const a3ui32 clip_index);
+
+//-----------------------------------------------------------------------------
+
 
 // description of single clip
 // metaphor: timeline
@@ -137,10 +143,10 @@ struct a3_Clip
 	a3ui32 last_keyframe;
 
 	// triggered when playing forward and the controller passes the end of a clip
-	a3_ClipTransition* forward_transition;
+	a3_ClipTransition forward_transition;
 
 	// triggered when playing forward and the controller passes the end of a clip
-	a3_ClipTransition* reverse_transition;
+	a3_ClipTransition reverse_transition;
 
 	// pointer to the pool of keyframes containing those included in the set; 
 	// within the array, the clip will be the sequence of keyframes from first to last.
