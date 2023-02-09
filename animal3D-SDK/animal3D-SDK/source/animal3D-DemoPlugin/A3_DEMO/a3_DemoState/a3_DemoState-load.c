@@ -685,7 +685,9 @@ void a3demo_loadTextures(a3_DemoState* demoState)
 		a3textureChangeRepeatMode(a3tex_repeatClamp, a3tex_repeatClamp);	// clamp both axes
 	}
 
+	// Set texure atlas to test sprite sheet texture
 	a3textureAtlasSetTexture(&demoState->texture_atlas, demoState->tex_testsprite);
+	// Allocate 8 rows and 8 columns of cells for texture atlas
 	a3textureAtlasAllocateEvenCells(&demoState->texture_atlas, 8, 8);
 
 

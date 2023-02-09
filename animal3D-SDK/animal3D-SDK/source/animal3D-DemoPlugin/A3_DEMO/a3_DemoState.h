@@ -298,6 +298,7 @@ struct a3_DemoState
 		};
 	};
 
+	// texture atlas
 	a3_TextureAtlas texture_atlas;
 
 
