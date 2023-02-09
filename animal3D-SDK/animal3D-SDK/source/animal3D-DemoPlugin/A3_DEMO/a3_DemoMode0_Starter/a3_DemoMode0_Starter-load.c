@@ -194,7 +194,7 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	a3clipTransitionInit(&demoMode->clipPool->clip[0].forward_transition, demoMode->clipPool, 1);
 
 	// create second clip
-	a3clipInit(&demoMode->clipPool->clip[1], "second", demoMode->keyframePool, 8, 9);
+	a3clipInit(&demoMode->clipPool->clip[1], "second", demoMode->keyframePool, 8, 15);
 	demoMode->clipPool->clip[1].index = 1;
 	a3clipDistributeDuration(&demoMode->clipPool->clip[1], 2);
 	a3clipTransitionInit(&demoMode->clipPool->clip[1].forward_transition, demoMode->clipPool, 0);

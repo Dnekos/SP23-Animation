@@ -65,7 +65,7 @@ inline a3i32 a3clipDistributeDuration(a3_Clip* clip, const a3real newClipDuratio
 	clip->duration_inverse = 1 / newClipDuration;
 
 	// +1 to make it inclusive? maybe
-	a3real keyframe_duration = (clip->last_keyframe - clip->first_keyframe + 1) * clip->duration_inverse;
+	a3real keyframe_duration = clip->duration / (clip->last_keyframe - clip->first_keyframe + 1);
 	a3real inverse = 1 / keyframe_duration;
 
 	// loop through keyframes and set durations
