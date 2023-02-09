@@ -270,6 +270,13 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 		-1.0f, -1.0f, -1.0f, 1.0f,
 	};
 
+	const a3mat4 atlasMat = {
+		 demoState->texture_atlas.cells[2].relativeSize[0],  0.0f,  0.0f, demoState->texture_atlas.cells[2].relativeOffset[0],
+		 0.0f,  demoState->texture_atlas.cells[2].relativeSize[1],  0.0f, demoState->texture_atlas.cells[2].relativeOffset[1],
+		 0.0f,  0.0f,  1.0f, 0.0f,
+		 0.0f,  0.0f,  0.0f, 1.0f,
+	};
+
 	// final model matrix and full matrix stack
 	a3mat4 viewProjectionMat = activeCamera->viewProjectionMat;
 	a3mat4 modelViewProjectionMat = viewProjectionMat;
@@ -371,7 +378,9 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, modelViewProjectionMat.mm);
 				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rgba4[i].v);
 				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
-				a3textureAtlasSendToShaderProgram(&demoState->texture_atlas, 2, )
+
+				if (currentSceneObject == demoMode->obj_plane)
+					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, atlasMat.mm);
 				a3vertexDrawableActivateAndRender(currentDrawable);
 			}
 			break;
