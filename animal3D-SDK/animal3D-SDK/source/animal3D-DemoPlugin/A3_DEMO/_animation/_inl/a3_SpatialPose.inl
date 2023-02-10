@@ -1,12 +1,9 @@
 /*
 	Copyright 2011-2020 Daniel S. Buckstein
-
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
 	You may obtain a copy of the License at
-
 		http://www.apache.org/licenses/LICENSE-2.0
-
 	Unless required by applicable law or agreed to in writing, software
 	distributed under the License is distributed on an "AS IS" BASIS,
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +14,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	a3_SpatialPose.inl
 	Implementation of inline spatial pose operations.
 */
@@ -35,7 +32,9 @@ inline a3i32 a3spatialPoseSetRotation(a3_SpatialPose* spatialPose, const a3f32 r
 {
 	if (spatialPose)
 	{
-
+		spatialPose->orientation.x = rx_degrees;
+		spatialPose->orientation.y = ry_degrees;
+		spatialPose->orientation.z = rz_degrees;
 	}
 	return -1;
 }
@@ -45,7 +44,9 @@ inline a3i32 a3spatialPoseSetScale(a3_SpatialPose* spatialPose, const a3f32 sx, 
 {
 	if (spatialPose)
 	{
-
+		spatialPose->scale.x = sx;
+		spatialPose->scale.y = sy;
+		spatialPose->scale.z = sz;
 	}
 	return -1;
 }
@@ -55,7 +56,9 @@ inline a3i32 a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f3
 {
 	if (spatialPose)
 	{
-
+		spatialPose->translation.x = tx;
+		spatialPose->translation.y = ty;
+		spatialPose->translation.z = tz;
 	}
 	return -1;
 }
@@ -68,7 +71,10 @@ inline a3i32 a3spatialPoseReset(a3_SpatialPose* spatialPose)
 {
 	if (spatialPose)
 	{
-
+		spatialPose->transform = a3mat4_identity;
+		spatialPose->orientation = a3vec3_zero;
+		spatialPose->scale = a3vec3_zero;
+		spatialPose->translation = a3vec3_zero;
 	}
 	return -1;
 }
@@ -78,7 +84,7 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 {
 	if (mat_out && spatialPose_in)
 	{
-
+		
 	}
 	return -1;
 }
@@ -88,7 +94,10 @@ inline a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_Spatial
 {
 	if (spatialPose_out && spatialPose_in)
 	{
-
+		spatialPose_out->transform = spatialPose_in->transform;
+		spatialPose_out->orientation = spatialPose_in->orientation;
+		spatialPose_out->scale = spatialPose_in->scale;
+		spatialPose_out->translation = spatialPose_in->translation;
 	}
 	return -1;
 }
