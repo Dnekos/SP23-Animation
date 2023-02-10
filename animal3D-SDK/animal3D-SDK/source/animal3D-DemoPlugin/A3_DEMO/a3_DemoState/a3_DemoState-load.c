@@ -393,7 +393,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 			a3_DemoStateShader
 				passTexcoord_transform_vs[1],
 				passTangentBasis_transform_vs[1],
-			//	passTangentBasis_morph5_transform_vs[1],
+				passTangentBasis_morph5_transform_vs[1],
 			//	passTangentBasis_skin_transform_vs[1],
 				passTexcoord_transform_instanced_vs[1],
 				passTangentBasis_transform_instanced_vs[1];//,
@@ -431,7 +431,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 			// 00-common
 			{ { { 0 },	"shdr-vs:pass-tex-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTexcoord_transform_vs4x.glsl" } } },
 			{ { { 0 },	"shdr-vs:pass-tb-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_transform_vs4x.glsl" } } },
-		//	{ { { 0 },	"shdr-vs:pass-tb-morph5-t",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_morph5_transform_vs4x.glsl" } } },
+			{ { { 0 },	"shdr-vs:pass-tb-morph5-t",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_morph5_transform_vs4x.glsl" } } },
 		//	{ { { 0 },	"shdr-vs:pass-tb-skin-t",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_skin_transform_vs4x.glsl" } } },
 			{ { { 0 },	"shdr-vs:pass-tex-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTexcoord_transform_instanced_vs4x.glsl" } } },
 			{ { { 0 },	"shdr-vs:pass-tbn-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_transform_instanced_vs4x.glsl" } } },
@@ -529,6 +529,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 	// tangent basis with instancing
 	currentDemoProg = demoState->prog_drawTangentBasis_instanced;
 	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tb-inst");
+	//a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_morph5_transform_vs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_transform_instanced_vs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTangentBasis_gs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorAttrib_fs->shader);

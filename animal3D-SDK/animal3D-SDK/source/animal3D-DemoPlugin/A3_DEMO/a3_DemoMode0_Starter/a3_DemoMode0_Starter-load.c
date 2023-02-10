@@ -176,7 +176,7 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	a3clipControllerInit(demoMode->clipController, "main", demoMode->clipPool, 0);
 
 	// set up keyframe values
-	for (int i = 0; i < 64; i++)
+	for (int i = 0; i < 16; i++)
 	{
 		demoMode->keyframePool->keyframe[i].data = i;
 		demoMode->keyframePool->keyframe[i].index = i;
