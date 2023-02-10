@@ -18,17 +18,17 @@
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
 
-	a3_DemoMode0_Starter-idle-input.c
-	Demo mode implementations: starter scene.
+	a3_DemoMode1_Animation-idle-input.c
+	Demo mode implementations: animation scene.
 
 	********************************************
-	*** INPUT FOR STARTER SCENE MODE         ***
+	*** INPUT FOR ANIMATION SCENE MODE       ***
 	********************************************
 */
 
 //-----------------------------------------------------------------------------
 
-#include "../a3_DemoMode0_Starter.h"
+#include "../a3_DemoMode1_Animation.h"
 
 //typedef struct a3_DemoState a3_DemoState;
 #include "../a3_DemoState.h"
@@ -40,31 +40,31 @@
 // CALLBACKS
 
 // main demo mode callback
-void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode, a3i32 const asciiKey, a3i32 const state)
+void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode, a3i32 const asciiKey, a3i32 const state)
 {
 	switch (asciiKey)
 	{
 		// toggle render program
-		a3demoCtrlCasesLoop(demoMode->render, starter_render_max, 'k', 'j');
+		a3demoCtrlCasesLoop(demoMode->render, animation_render_max, 'k', 'j');
 
 		// toggle display program
-		a3demoCtrlCasesLoop(demoMode->display, starter_display_max, 'K', 'J');
+		a3demoCtrlCasesLoop(demoMode->display, animation_display_max, 'K', 'J');
 
 		// toggle active camera
-		a3demoCtrlCasesLoop(demoMode->activeCamera, starter_camera_max, 'v', 'c');
+		a3demoCtrlCasesLoop(demoMode->activeCamera, animation_camera_max, 'v', 'c');
 
 		// toggle pipeline mode
-		a3demoCtrlCasesLoop(demoMode->pipeline, starter_pipeline_max, ']', '[');
+		a3demoCtrlCasesLoop(demoMode->pipeline, animation_pipeline_max, ']', '[');
 
 		// toggle target
 		a3demoCtrlCasesLoop(demoMode->targetIndex[demoMode->pass], demoMode->targetCount[demoMode->pass], '}', '{');
 
 		// toggle pass to display
-		a3demoCtrlCasesLoop(demoMode->pass, starter_pass_max, ')', '(');
+		a3demoCtrlCasesLoop(demoMode->pass, animation_pass_max, ')', '(');
 	}
 }
 
-void a3starter_input_keyCharHold(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode, a3i32 const asciiKey, a3i32 const state)
+void a3animation_input_keyCharHold(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode, a3i32 const asciiKey, a3i32 const state)
 {
 //	switch (asciiKey)
 //	{
@@ -79,12 +79,9 @@ void a3demo_input_controlProjector(
 	a3_DemoState* demoState, a3_DemoProjector* projector,
 	a3f64 const dt, a3real ctrlMoveSpeed, a3real ctrlRotateSpeed, a3real ctrlZoomSpeed);
 
-void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3f64 const dt)
+void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
 {
 	a3_DemoProjector* projector = demoMode->projector + demoMode->activeCamera;
-
-	//active clip controller
-	//a3_ClipController const* activeClipController = demoMode->clipController;
 
 	// right click to ray pick
 	if (a3mouseGetState(demoState->mouse, a3mouse_right) == a3input_down)
@@ -110,35 +107,6 @@ void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3
 	// move camera
 	a3demo_input_controlProjector(demoState, projector,
 		dt, projector->ctrlMoveSpeed, projector->ctrlRotateSpeed, projector->ctrlZoomSpeed);
-
-	//Select Clip Controller to Edit
-	//Cycle through the three clip controllers by index
-	//On 'k' or 'l' press, increment or decrement clip controller index value by one
-	//When we reach the first or last index, jump back to end or start?
-
-	//Play/Pause controller playback
-	//On 'SPACEBAR' press get playback_direction = activeClipController.playback_direction
-	//If (playback_direction == 1 || -1) store this value then set it to 0
-	//else (playback_direction == 0) set this to stored value
-
-	//Set to first/last frame in current clip
-	//On 'u' or 'U' press get current_keyframe = activeClipController.clip_pool->clip[activeClipController.clip].keyframe_pool->keyframe[activeClipController.keyframe]
-	//if('u') current_keyframe = activeClipController.clip_pool->clip[activeClipController.clip].first_keyframe
-	//else if('U') current_keyframe = activeClipController.clip_pool->clip[activeClipController.clip].last_keyframe
-
-	//Change clip to control
-	//Get name of clip we want to control
-	//Use get clip index function using clip name
-	//Use set clip to play function using clip index
-
-	//Flip Playback Direction
-	//On 'y' press get playback_direction = activeClipController.playback_direction
-	//if(playback_direction == 0) do nothing
-	//else if(playback_direction == 1) playback_direction = -1
-	//else if(playback_direction == -1) playback_direction = 1
-
-	//Slow-motion (multiply the time step by a factor of less than one)
-	//Multiply playback_direction by 0.5?
 }
 
 
