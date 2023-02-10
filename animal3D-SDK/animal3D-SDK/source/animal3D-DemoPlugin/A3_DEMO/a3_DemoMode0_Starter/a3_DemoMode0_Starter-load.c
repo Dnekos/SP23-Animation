@@ -176,10 +176,12 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	a3clipControllerInit(demoMode->clipController, "main", demoMode->clipPool, 0);
 
 	// set up keyframe values
-	for (int i = 0; i < 16; i++)
+	int index = 0;
+	for (a3real i = 0; i < 2; i += 0.125f)
 	{
-		demoMode->keyframePool->keyframe[i].data = i;
-		demoMode->keyframePool->keyframe[i].index = i;
+		demoMode->keyframePool->keyframe[index].data = i;
+		demoMode->keyframePool->keyframe[index].index = index;
+		index++;
 	}
 
 	// create clip

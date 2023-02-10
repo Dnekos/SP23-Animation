@@ -91,7 +91,11 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	}
 
 	a3clipControllerUpdate(demoMode->clipController, (a3real)dt);
-	printf("current clip: %s, current frame: %i\n", demoMode->clipController[0].clip_pool->clip[demoMode->clipController->clip].name, demoMode->clipController[0].keyframe);
+	printf("current clip: %s, current frame: %i, local clip time: %f, local frame time: %f\n", 
+		demoMode->clipController[0].clip_pool->clip[demoMode->clipController->clip].name, 
+		demoMode->clipController[0].keyframe,
+		demoMode->clipController[0].clip_param,
+		demoMode->clipController[0].keyframe_param);
 }
 
 

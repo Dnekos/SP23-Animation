@@ -60,7 +60,7 @@ a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 }
 
 // initialize keyframe
-a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3ui32 value_x)
+a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3real value_x)
 {
 	if (!keyframe_out || duration <= 0) return -1;
 	// set keyframe values
@@ -73,9 +73,10 @@ a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3u
 
 a3i32 a3clipTransitionInit(a3_ClipTransition* clipTransition_out, const a3_ClipPool* clipPool, const a3ui32 clip_index)
 {
-	if (!clipTransition_out || !clipPool || clip_index < 0) return -1;
+	if (!clipTransition_out || !clipPool || clip_index < 0) 
+		return -1;
 
-	clipTransition_out->clipIndex_pool = clip_index;
+	clipTransition_out->clipIndex = clip_index;
 	clipTransition_out->clip_pool = clipPool;
 	return 1;
 }

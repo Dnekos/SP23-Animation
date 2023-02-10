@@ -67,7 +67,7 @@ struct a3_Keyframe
 	a3real duration_inverse;
 
 	// value of the sample described by a keyframe.
-	a3ui32 data;
+	a3real data;
 };
 
 // pool of keyframe descriptors
@@ -88,7 +88,7 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool);
 
 // initialize keyframe
-a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3ui32 value_x);
+a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3real value_x);
 
 
 //-----------------------------------------------------------------------------
@@ -102,7 +102,7 @@ struct a3_ClipTransition
 	const a3_ClipPool* clip_pool;
 
 	// index of target clip in clip pool
-	a3ui32 clipIndex_pool;
+	a3ui32 clipIndex;
 
 	// current time relative to start of clip
 	a3real clip_time;

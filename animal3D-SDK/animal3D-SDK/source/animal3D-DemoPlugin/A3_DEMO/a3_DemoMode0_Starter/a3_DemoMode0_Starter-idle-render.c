@@ -272,17 +272,28 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	
 	
 	/*const a3mat4 atlasMat = {
-		 demoState->texture_atlas.cells[6].relativeSize[0],  0.0f,  0.0f, demoState->texture_atlas.cells[6].relativeOffset[0],
-		 0.0f, demoState->texture_atlas.cells[6].relativeSize[1], 0.0f, demoState->texture_atlas.cells[6].relativeOffset[1],
+		 demoMode->clipController->clip_pool->clip[demoMode->clipController->clip].keyframe_pool->keyframe[demoMode->clipController->keyframe].data,  0.0f,  0.0f, demoMode->clipController->clip_pool->clip[demoMode->clipController->clip].keyframe_pool->keyframe[demoMode->clipController->keyframe].data,
+		 0.0f, demoMode->clipController->clip_pool->clip[demoMode->clipController->clip].keyframe_pool->keyframe[demoMode->clipController->keyframe].data, 0.0f, demoMode->clipController->clip_pool->clip[demoMode->clipController->clip].keyframe_pool->keyframe[demoMode->clipController->keyframe].data,
 		 0.0f,  0.0f,  1.0f, 0.0f,
 		 0.0f,  0.0f,  0.0f, 1.0f,
 	};*/
+
+	const a3mat4 atlasMat = {
+		 demoState->texture_atlas.cells[2].relativeSize[0],  0.0f,  0.0f, demoMode->clipController->clip_pool->clip[demoMode->clipController->clip].keyframe_pool->keyframe[demoMode->clipController->keyframe].data,
+		 0.0f, demoState->texture_atlas.cells[2].relativeSize[1], 0.0f, demoMode->clipController->clip_pool->clip[demoMode->clipController->clip].keyframe_pool->keyframe[demoMode->clipController->keyframe].data,
+		 0.0f,  0.0f,  1.0f, 0.0f,
+		 0.0f,  0.0f,  0.0f, 1.0f,
+	};
+	
+	/*
 	const a3mat4 atlasMat = {
 		 0.5f,  0.0f,  0.0f, 0.125f,
 		 0.0f, 0.5f, 0.0f, 0.125f,
 		 0.0f,  0.0f,  1.0f, 0,
 		 0.0f,  0.0f,  0.0f, 1.0f,
 	};
+	*/
+	
 
 	// final model matrix and full matrix stack
 	a3mat4 viewProjectionMat = activeCamera->viewProjectionMat;
@@ -333,6 +344,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 
 	// select program based on settings
 	currentDemoProgram = renderProgram[pipeline][render];
+	//currentDemoProgram = demoState->prog_drawTangentMorph;
 	a3shaderProgramActivate(currentDemoProgram->program);
 
 	// send shared data: 
@@ -344,7 +356,8 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uP_inv, 1, activeCamera->projectionMatInv.mm);
 	a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uPB, 1, projectionBiasMat.mm);
 	a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uPB_inv, 1, projectionBiasMat_inv.mm);
-	a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, a3mat4_identity.mm);
+	//a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, a3mat4_identity.mm);
+	a3shaderUniformSendFloatMat(a3unif_mat4, 1, currentDemoProgram->uAtlas, 1, atlasMat.mm);
 	a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, hueCount, rgba4->v);
 	a3shaderUniformSendDouble(a3unif_single, currentDemoProgram->uTime, 1, &demoState->timer_display->totalTime);
 
@@ -386,8 +399,8 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rgba4[i].v);
 				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
 
-				if (currentSceneObject == demoMode->obj_plane)
-					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, atlasMat.mm);
+				//if (currentSceneObject == demoMode->obj_plane)
+					//a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, atlasMat.mm);
 				a3vertexDrawableActivateAndRender(currentDrawable);
 			}
 			break;
@@ -436,6 +449,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	// reset other uniforms
 	a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, fsq.mm);
 	a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, a3mat4_identity.mm);
+	//a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, atlasMat.mm);
 	a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, a3vec4_one.v);
 	a3vertexDrawableRenderActive();
 
@@ -507,6 +521,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 		// done
 		a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, fsq.mm);
 		a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, a3mat4_identity.mm);
+		//a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, atlasMat.mm);
 		a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, a3vec4_one.v);
 		a3vertexDrawableRenderActive();
 	}
@@ -570,7 +585,8 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 					a3demo_quickInvertTranspose_internal(modelViewMat.m);
 					modelViewMat.v3 = a3vec4_zero;
 					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
-					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, a3mat4_identity.mm);
+					//a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, a3mat4_identity.mm);
+					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, atlasMat.mm);
 					a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &i);
 					a3vertexDrawableActivateAndRender(currentDrawable);
 				}
@@ -585,6 +601,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 			a3shaderProgramActivate(currentDemoProgram->program);
 			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, fsq.mm);
 			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, a3mat4_identity.mm);
+			//a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, atlasMat.mm);
 			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, a3vec4_one.v);
 			a3framebufferBindColorTexture(currentWriteFBO, a3tex_unit00, 0);
 			a3vertexDrawableRenderActive();
