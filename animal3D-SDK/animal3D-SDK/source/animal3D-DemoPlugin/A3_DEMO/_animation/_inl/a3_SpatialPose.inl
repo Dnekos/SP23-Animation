@@ -35,6 +35,7 @@ inline a3i32 a3spatialPoseSetRotation(a3_SpatialPose* spatialPose, const a3f32 r
 		spatialPose->orientation.x = rx_degrees;
 		spatialPose->orientation.y = ry_degrees;
 		spatialPose->orientation.z = rz_degrees;
+		return 1;
 	}
 	return -1;
 }
@@ -47,6 +48,7 @@ inline a3i32 a3spatialPoseSetScale(a3_SpatialPose* spatialPose, const a3f32 sx, 
 		spatialPose->scale.x = sx;
 		spatialPose->scale.y = sy;
 		spatialPose->scale.z = sz;
+		return 1;
 	}
 	return -1;
 }
@@ -59,6 +61,7 @@ inline a3i32 a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f3
 		spatialPose->translation.x = tx;
 		spatialPose->translation.y = ty;
 		spatialPose->translation.z = tz;
+		return 1;
 	}
 	return -1;
 }
@@ -75,6 +78,7 @@ inline a3i32 a3spatialPoseReset(a3_SpatialPose* spatialPose)
 		spatialPose->orientation = a3vec3_zero;
 		spatialPose->scale = a3vec3_zero;
 		spatialPose->translation = a3vec3_zero;
+		return 1;
 	}
 	return -1;
 }
@@ -84,7 +88,8 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 {
 	if (mat_out && spatialPose_in)
 	{
-		
+
+		return 1;
 	}
 	return -1;
 }
@@ -98,6 +103,7 @@ inline a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_Spatial
 		spatialPose_out->orientation = spatialPose_in->orientation;
 		spatialPose_out->scale = spatialPose_in->scale;
 		spatialPose_out->translation = spatialPose_in->translation;
+		return 1;
 	}
 	return -1;
 }

@@ -35,17 +35,23 @@ a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_
 {
 	// validate params and initialization states
 	//	(output is not yet initialized, hierarchy is initialized)
-	if (poseGroup_out && hierarchy && !poseGroup_out->hierarchy && hierarchy->nodes)
+	if (poseGroup_out && hierarchy && !poseGroup_out->hierarchy && hierarchy->nodes && poseCount >= 0)
 	{
 		// determine memory requirements
+		poseGroup_out->poseCount = poseCount;
+		size_t size = poseCount * sizeof(a3_HierarchyPose);
 
 		// allocate everything (one malloc)
-		//??? = (...)malloc(sz);
+		poseGroup_out->hierarchyPoses = (a3_HierarchyPose*)malloc(size);
 
 		// set pointers
 		poseGroup_out->hierarchy = hierarchy;
 
 		// reset all data
+		poseGroup_out->channels = a3poseChannel_none;
+		poseGroup_out->euler_order = a3poseEulerOrder_xyz;
+		poseGroup_out->spatialPose_pool = 0;
+		poseGroup_out->spatial_pose_count = 0;
 
 		// done
 		return 1;
@@ -60,7 +66,7 @@ a3i32 a3hierarchyPoseGroupRelease(a3_HierarchyPoseGroup *poseGroup)
 	if (poseGroup && poseGroup->hierarchy)
 	{
 		// release everything (one free)
-		//free(???);
+		free(poseGroup->hierarchyPoses);
 
 		// reset pointers
 		poseGroup->hierarchy = 0;
@@ -82,14 +88,18 @@ a3i32 a3hierarchyStateCreate(a3_HierarchyState *state_out, const a3_Hierarchy *h
 	if (state_out && hierarchy && !state_out->hierarchy && hierarchy->nodes)
 	{
 		// determine memory requirements
+		size_t size = sizeof(a3_HierarchyPoseGroup);
 
 		// allocate everything (one malloc)
-		//??? = (...)malloc(sz);
+		state_out->poseGroup = (a3_HierarchyPoseGroup*)malloc(size);
 
 		// set pointers
 		state_out->hierarchy = hierarchy;
 
 		// reset all data
+		state_out->sample_pose = 0;
+		state_out->local_space_pose = 0;
+		state_out->object_space_pose = 0;
 
 		// done
 		return 1;
@@ -104,10 +114,13 @@ a3i32 a3hierarchyStateRelease(a3_HierarchyState *state)
 	if (state && state->hierarchy)
 	{
 		// release everything (one free)
-		//free(???);
+		free(state->poseGroup);
 
 		// reset pointers
 		state->hierarchy = 0;
+		state->sample_pose = 0;
+		state->local_space_pose = 0;
+		state->object_space_pose = 0;
 
 		// done
 		return 1;
