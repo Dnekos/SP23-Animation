@@ -84,7 +84,16 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 {
 	if (mat_out && spatialPose_in)
 	{
+		const a3mat4 translation_and_scale = {
+			spatialPose_in->scale.x, 0.0f, 0.0f, 0.0f,
+			spatialPose_in->translation.z, spatialPose_in->scale.y, 0, 0.0f,
+			spatialPose_in->translation.y, 0, spatialPose_in->scale.z, 0.0f,
+			spatialPose_in->translation.x, 0.0f, 0.0f, 0,
+		};
+		*mat_out = a3mat4_identity;
+		a3real4x4ConcatL(mat_out, &translation_and_scale);
 		
+		// no rotation, L + ratio + axis aligned
 	}
 	return -1;
 }
