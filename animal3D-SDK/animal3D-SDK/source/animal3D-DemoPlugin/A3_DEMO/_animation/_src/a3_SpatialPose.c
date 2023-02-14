@@ -35,7 +35,6 @@ a3i32 a3spatialPoseInit(a3_SpatialPose* spatialPose_out, a3mat4 spatial_transfor
 	spatialPose_out->orientation = spatial_orientation;
 	spatialPose_out->scale = spatial_scale;
 	spatialPose_out->translation = spatial_translation;
-
 	return 1;
 }
 

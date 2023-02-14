@@ -650,10 +650,10 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 
 	// tangent morph
 	//currentDemoProg = demoState->prog_drawTangentMorph;
-	//a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tb");
-	//a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_morph5_transform_vs->shader);
-	//a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTangentBasis_gs->shader);
-	//a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorAttrib_fs->shader);
+	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tb");
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_morph5_transform_vs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTangentBasis_gs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorAttrib_fs->shader);
 
 
 	// tangent basis with instancing

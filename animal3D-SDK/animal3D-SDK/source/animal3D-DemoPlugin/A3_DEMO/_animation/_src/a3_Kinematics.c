@@ -39,6 +39,19 @@ a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, c
 		//			- object matrix = parent object matrix * local matrix
 		//		- else
 		//			- copy local matrix to object matrix
+		for (a3ui32 i = firstIndex; i < nodeCount; i++) 
+		{
+			a3i32 parent = hierarchyState->hierarchy->nodes[i].parentIndex;
+			if (parent != -1)
+			{
+				a3spatialPoseCopy(hierarchyState->object_space_pose[i].spatialPose, hierarchyState->local_space_pose[i].spatialPose);
+				a3real4x4Concat(&hierarchyState->object_space_pose[i].spatialPose->transform.mm, &hierarchyState->object_space_pose[parent].spatialPose->transform.mm);
+			}
+			else 
+			{
+				a3spatialPoseCopy(hierarchyState->object_space_pose[i].spatialPose, hierarchyState->local_space_pose[i].spatialPose);
+			}
+		}
 	}
 	return -1;
 }
