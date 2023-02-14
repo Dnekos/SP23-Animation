@@ -83,17 +83,109 @@ inline a3i32 a3spatialPoseReset(a3_SpatialPose* spatialPose)
 inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatialPose_in, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
 {
 	if (mat_out && spatialPose_in)
-	{
-		const a3mat4 translation_and_scale = {
-			spatialPose_in->scale.x, 0.0f, 0.0f, 0.0f,
-			spatialPose_in->translation.z, spatialPose_in->scale.y, 0, 0.0f,
-			spatialPose_in->translation.y, 0, spatialPose_in->scale.z, 0.0f,
-			spatialPose_in->translation.x, 0.0f, 0.0f, 0,
-		};
-		*mat_out = a3mat4_identity;
-		a3real4x4ConcatL(mat_out, &translation_and_scale);
-		
-		// no rotation, L + ratio + axis aligned
+	{			*mat_out = a3mat4_identity;
+
+		if (channel & a3poseChannel_translate_x)
+		{
+			const a3mat4 translation_and_scale = {
+				1, 0.0f, 0.0f, 0.0f,
+				0, 1, 0, 0.0f,
+				0, 0, 1, 0.0f,
+				spatialPose_in->translation.x, 0.0f, 0.0f, 1,
+			};
+
+			a3real4x4ConcatL(mat_out, &translation_and_scale);
+		}
+		if (channel & a3poseChannel_translate_y)
+		{
+			const a3mat4 translation_and_scale = {
+				1, 0.0f, 0.0f, 0.0f,
+				0, 1, 0, 0.0f,
+				spatialPose_in->translation.y, 0, 1, 0.0f,
+				0, 0.0f, 0.0f, 1,
+			};
+
+			a3real4x4ConcatL(mat_out, &translation_and_scale);
+		}
+		if (channel & a3poseChannel_translate_z)
+		{
+			const a3mat4 translation_and_scale = {
+				1, 0.0f, 0.0f, 0.0f,
+				spatialPose_in->translation.z, 1, 0, 0.0f,
+				0, 0, 1, 0.0f,
+				0, 0.0f, 0.0f, 1,
+			};
+
+			a3real4x4ConcatL(mat_out, &translation_and_scale);
+		}
+		if (channel & a3poseChannel_scale_x)
+		{
+			const a3mat4 x_scale = {
+				spatialPose_in->scale.x, 0.0f, 0.0f, 0.0f,
+				0, 1, 0, 0.0f,
+				0, 0, 1, 0.0f,
+				0, 0.0f, 0.0f, 1,
+			};
+			a3real4x4ConcatL(mat_out, &x_scale);
+		}
+		if (channel & a3poseChannel_scale_y)
+		{
+			const a3mat4 y_scale = {
+				1, 0.0f, 0.0f, 0.0f,
+				0, spatialPose_in->scale.y, 0, 0.0f,
+				0, 0, 1, 0.0f,
+				0, 0.0f, 0.0f, 1,
+			};
+
+			a3real4x4ConcatL(mat_out, &y_scale);
+		}
+		if (channel & a3poseChannel_scale_z)
+		{
+			const a3mat4 z_scale = {
+				1, 0.0f, 0.0f, 0.0f,
+				0, 1, 0, 0.0f,
+				0, 0, spatialPose_in->scale.z, 0.0f,
+				0, 0.0f, 0.0f, 1,
+			};
+			a3real4x4ConcatL(mat_out, &z_scale);
+		}
+		if (channel & a3poseChannel_orient_x)
+		{
+			const a3mat4 x_orient = {
+				1, 0.0f, 0.0f, 0.0f,
+				0, a3cosd(spatialPose_in->orientation.x), -a3sind(spatialPose_in->orientation.x), 0.0f,
+				0, a3sind(spatialPose_in->orientation.x), a3cosd(spatialPose_in->orientation.x), 0.0f,
+				0, 0.0f, 0, 1,
+			};
+
+			a3real4x4ConcatL(mat_out, &x_orient);
+
+		}
+		if (channel & a3poseChannel_orient_y)
+		{
+			const a3mat4 y_orient = {
+				a3cosd(spatialPose_in->orientation.y), 0.0f, a3sind(spatialPose_in->orientation.y), 0.0f,
+				0, 1, 0, 0.0f,
+				-a3sind(spatialPose_in->orientation.y), 0, a3cosd(spatialPose_in->orientation.y), 0.0f,
+				0, 0.0f, 0, 1,
+			};
+
+			a3real4x4ConcatL(mat_out, &y_orient);
+
+		}
+		if (channel & a3poseChannel_orient_z)
+		{
+			const a3mat4 z_orient = {
+				a3cosd(spatialPose_in->orientation.z), a3sind(spatialPose_in->orientation.z), 0.0f, 0.0f,
+				-a3sind(spatialPose_in->orientation.z), a3cosd(spatialPose_in->orientation.z), 0, 0.0f,
+				0, 0, 1, 0.0f,
+				0, 0.0f, 0, 1,
+			};
+
+			a3real4x4ConcatL(mat_out, &z_orient);
+
+		}
+		// L + ratio + axis aligned
 	}
 	return -1;
 }
