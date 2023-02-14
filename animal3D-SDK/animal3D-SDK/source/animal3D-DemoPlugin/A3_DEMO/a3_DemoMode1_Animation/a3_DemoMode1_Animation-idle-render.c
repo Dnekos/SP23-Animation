@@ -495,7 +495,8 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				const a3i32 flag[1] = { demoState->displayTangentBases * 3 + demoState->displayWireframe * 4 };
 				const a3f32 size[1] = { 0.0625f };
 
-				currentDemoProgram = demoState->prog_drawTangentBasis;
+				//currentDemoProgram = demoState->prog_drawTangentBasis;
+				currentDemoProgram = demoState->prog_drawColorUnif; // hacky
 				a3shaderProgramActivate(currentDemoProgram->program);
 
 				// projection matrix
@@ -510,6 +511,27 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uFlag, 1, flag);
 
 				// draw skeleton joint bases
+				/// hacky
+				a3ui32 i, n = 32; // n=num joints
+				a3mat4 tmpLMVP, tmpL, tmpS;
+				// tmpLMCP = full stack for single joing
+				// tmpL: bone matrix for single joint (FK output)
+				// tmpS: shared scale
+
+
+				// init scale
+				a3real4x4SetScale(tmpS.m, 0.05f);
+
+				a3vertexDrawableActivate(demoState->draw_node);
+				for (i = 0; i < n; ++i)
+				{
+					// tmpL = FK for this joing * tmpS
+					a3real4x4Product(tmpL.m, demoMode->hierarchyState_skel->object_space_pose[i].spatialPose->transform.m, tmpS.m);
+
+					a3real4x4Product(tmpLMVP.m, viewProjectionMat.m, tmpL.m);
+					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, tmpLMVP.mm);
+					a3vertexDrawableRenderActive();
+				}
 
 			}
 

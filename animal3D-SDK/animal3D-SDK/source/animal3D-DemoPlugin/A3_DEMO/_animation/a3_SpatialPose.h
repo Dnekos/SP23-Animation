@@ -133,6 +133,10 @@ a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatialPose_in
 // copy operation for single node pose
 a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_in);
 
+// TODO: DO THIS
+// i dont think both parameters are spatial poses, i feel like one should be a hierarchy, or at least dont make it an inout
+a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPose_delta_inout, const a3_SpatialPose* spatialPose_base_in);
+
 
 //-----------------------------------------------------------------------------
 

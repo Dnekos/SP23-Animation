@@ -57,7 +57,7 @@ inline a3i32 a3hierarchyPoseReset(const a3_HierarchyPose* pose_inout, const a3ui
 {
 	if (pose_inout && nodeCount)
 	{
-		for (int i = 0; i < nodeCount; i++) 
+		for (a3ui32 i = 0; i < nodeCount; i++) 
 		{
 			a3spatialPoseReset(&pose_inout->spatialPose[i]);
 		}
@@ -70,7 +70,7 @@ inline a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3
 {
 	if (pose_inout && nodeCount)
 	{
-		for (int i = 0; i < nodeCount; i++)
+		for (a3ui32 i = 0; i < nodeCount; i++)
 		{
 			a3spatialPoseConvert(&pose_inout->spatialPose[i].transform, & pose_inout->spatialPose[i], channel, order);
 		}
@@ -83,9 +83,9 @@ inline a3i32 a3hierarchyPoseCopy(const a3_HierarchyPose* pose_out, const a3_Hier
 {
 	if (pose_out && pose_in && nodeCount)
 	{
-		for (int i = 0; i < nodeCount; i++)
+		for (a3ui32 i = 0; i < nodeCount; i++)
 		{
-			a3spatialPoseCopy(pose_out, pose_in);
+			a3spatialPoseCopy(pose_out->spatialPose, pose_in->spatialPose);
 		}
 	}
 	return -1;
