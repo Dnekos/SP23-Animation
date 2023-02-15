@@ -44,6 +44,9 @@ a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, c
 			a3i32 parent = hierarchyState->hierarchy->nodes[i].parentIndex;
 			if (parent != -1)
 			{
+				// Can we just do product here?
+				// a3real4x4Product(hierarchyState->object_space_pose[i].spatialPose->transform.mm, 
+				//	&hierarchyState->object_space_pose[parent].spatialPose->transform.mm, hierarchyState->local_space_pose[i].spatialPose->transform.mm);
 				a3spatialPoseCopy(hierarchyState->object_space_pose[i].spatialPose, hierarchyState->local_space_pose[i].spatialPose);
 				a3real4x4Concat(&hierarchyState->object_space_pose[i].spatialPose->transform.mm, &hierarchyState->object_space_pose[parent].spatialPose->transform.mm);
 			}
@@ -52,6 +55,7 @@ a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, c
 				a3spatialPoseCopy(hierarchyState->object_space_pose[i].spatialPose, hierarchyState->local_space_pose[i].spatialPose);
 			}
 		}
+		return 1;
 	}
 	return -1;
 }

@@ -62,10 +62,10 @@ struct a3_HierarchyPoseGroup
 	const a3_Hierarchy *hierarchy;
 
 	// The actual array of individual node poses. This is the set of all poses for all nodes.
-	const a3_SpatialPose* spatialPose_pool;
+	a3_SpatialPose* spatialPose_pool;
 
 	// An array of hierarchical poses (referencing the spatial poses). This is what organizes the above individual node poses.
-	const a3_HierarchyPose* hierarchyPoses;
+	a3_HierarchyPose* hierarchyPoses;
 
 	// An array of transformation channels for each node in the hierarchy; 
 	// describes which individual pose transformation components are used by each node (e.g. rotation x, translation xyz, etc.); 
