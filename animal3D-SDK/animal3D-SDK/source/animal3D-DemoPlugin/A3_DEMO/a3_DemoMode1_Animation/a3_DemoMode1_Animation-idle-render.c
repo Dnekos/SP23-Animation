@@ -510,6 +510,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				// overlay flag
 				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uFlag, 1, flag);
 
+				// -----------------------SKELETON----------------------------
 				// draw skeleton joint bases
 				/// hacky
 				a3ui32 i, n = 32; // n=num joints

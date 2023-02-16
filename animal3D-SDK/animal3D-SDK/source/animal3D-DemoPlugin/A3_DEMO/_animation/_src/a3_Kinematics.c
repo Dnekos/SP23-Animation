@@ -42,6 +42,10 @@ a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, c
 		for (a3ui32 i = firstIndex; i < nodeCount; i++) 
 		{
 			a3i32 parent = hierarchyState->hierarchy->nodes[i].parentIndex;
+			
+			// make sure the local is the same as the bas
+			
+
 			if (parent != -1)
 			{
 				// Can we just do product here?
@@ -50,8 +54,10 @@ a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, c
 				a3spatialPoseCopy(hierarchyState->object_space_pose[i].spatialPose, hierarchyState->local_space_pose[i].spatialPose);
 				a3real4x4Concat(&hierarchyState->object_space_pose[i].spatialPose->transform.mm, &hierarchyState->object_space_pose[parent].spatialPose->transform.mm);
 			}
-			else 
+			else
 			{
+				a3spatialPoseConvert(&hierarchyState->poseGroup->spatialPose_pool[i].transform, &hierarchyState->poseGroup->spatialPose_pool[i], hierarchyState->poseGroup->channels[i], 0);
+				a3spatialPoseCopy(hierarchyState->local_space_pose[i].spatialPose, &hierarchyState->poseGroup->spatialPose_pool[i]);
 				a3spatialPoseCopy(hierarchyState->object_space_pose[i].spatialPose, hierarchyState->local_space_pose[i].spatialPose);
 			}
 		}
