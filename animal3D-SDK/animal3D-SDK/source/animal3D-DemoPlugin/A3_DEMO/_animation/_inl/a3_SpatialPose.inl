@@ -87,41 +87,10 @@ inline a3i32 a3spatialPoseReset(a3_SpatialPose* spatialPose)
 inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatialPose_in, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
 {
 	if (mat_out && spatialPose_in)
-	{		*mat_out = a3mat4_identity;
+	{		
+		*mat_out = a3mat4_identity;
 
-		if (channel & a3poseChannel_translate_x)
-		{
-			const a3mat4 translation_and_scale = {
-				1, 0.0f, 0.0f, 0.0f,
-				0, 1, 0, 0.0f,
-				0, 0, 1, 0.0f,
-				spatialPose_in->translation.x, 0.0f, 0.0f, 1,
-			};
-
-			a3real4x4ConcatL(&mat_out->mm, &translation_and_scale.mm);
-		}
-		if (channel & a3poseChannel_translate_y)
-		{
-			const a3mat4 translation_and_scale = {
-				1, 0.0f, 0.0f, 0.0f,
-				0, 1, 0, 0.0f,
-				spatialPose_in->translation.y, 0, 1, 0.0f,
-				0, 0.0f, 0.0f, 1,
-			};
-
-			a3real4x4ConcatL(&mat_out->mm, &translation_and_scale.mm);
-		}
-		if (channel & a3poseChannel_translate_z)
-		{
-			const a3mat4 translation_and_scale = {
-				1, 0.0f, 0.0f, 0.0f,
-				spatialPose_in->translation.z, 1, 0, 0.0f,
-				0, 0, 1, 0.0f,
-				0, 0.0f, 0.0f, 1,
-			};
-
-			a3real4x4ConcatL(&mat_out->mm, &translation_and_scale.mm);
-		}
+		
 		if (channel & a3poseChannel_scale_x)
 		{
 			const a3mat4 x_scale = {
@@ -152,6 +121,39 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 				0, 0.0f, 0.0f, 1,
 			};
 			a3real4x4ConcatL(&mat_out->mm, &z_scale.mm);
+		}
+		if (channel & a3poseChannel_translate_x)
+		{
+			const a3mat4 translation_and_scale = {
+				1, 0.0f, 0.0f, 0.0f,
+				0, 1, 0, 0.0f,
+				0, 0, 1, 0.0f,
+				spatialPose_in->translation.x, 0.0f, 0.0f, 1,
+			};
+
+			a3real4x4ConcatL(&mat_out->mm, &translation_and_scale.mm);
+		}
+		if (channel & a3poseChannel_translate_y)
+		{
+			const a3mat4 translation_and_scale = {
+				1, 0.0f, 0.0f, 0.0f,
+				0, 1, 0, 0.0f,
+				0, 0, 1, 0.0f,
+				0, spatialPose_in->translation.y, 0.0f, 1,
+			};
+
+			a3real4x4ConcatL(&mat_out->mm, &translation_and_scale.mm);
+		}
+		if (channel & a3poseChannel_translate_z)
+		{
+			const a3mat4 translation_and_scale = {
+				1, 0.0f, 0.0f, 0.0f,
+				0, 1, 0, 0.0f,
+				0, 0, 1, 0.0f,
+				0, spatialPose_in->translation.z, 0.0f, 1,
+			};
+
+			a3real4x4ConcatL(&mat_out->mm, &translation_and_scale.mm);
 		}
 		if (channel & a3poseChannel_orient_x)
 		{
