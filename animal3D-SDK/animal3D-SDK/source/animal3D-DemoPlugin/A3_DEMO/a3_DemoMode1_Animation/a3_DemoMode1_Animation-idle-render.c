@@ -490,7 +490,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				a3demo_drawModelSolidColor(modelViewProjectionMat.m, viewProjectionMat.m, a3mat4_identity.m, demoState->prog_drawColorUnif, demoState->draw_grid, blue);
 			}
 		
-			if (demoState->displayTangentBases || demoState->displayWireframe)
+			if (demoState->displayTangentBases || demoState->displayWireframe) // this is not returning true so we never draw
 			{
 				const a3i32 flag[1] = { demoState->displayTangentBases * 3 + demoState->displayWireframe * 4 };
 				const a3f32 size[1] = { 0.0625f };
@@ -515,7 +515,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				/// hacky
 				a3ui32 i, n = 32; // n=num joints
 				a3mat4 tmpLMVP, tmpL, tmpS;
-				// tmpLMCP = full stack for single joing
+				// tmpLMCP = full stack for single joint
 				// tmpL: bone matrix for single joint (FK output)
 				// tmpS: shared scale
 
@@ -526,7 +526,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				a3vertexDrawableActivate(demoState->draw_node);
 				for (i = 0; i < n; ++i)
 				{
-					// tmpL = FK for this joing * tmpS
+					// tmpL = FK for this joint * tmpS
 					a3real4x4Product(tmpL.m, demoMode->hierarchyState_skel->object_space_pose[i].spatialPose->transform.m, tmpS.m);
 
 					a3real4x4Product(tmpLMVP.m, viewProjectionMat.m, tmpL.m);

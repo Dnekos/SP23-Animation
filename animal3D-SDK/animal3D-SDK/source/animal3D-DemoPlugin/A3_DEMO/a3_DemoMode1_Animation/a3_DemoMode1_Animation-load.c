@@ -32,6 +32,8 @@
 
 #include "../a3_DemoState.h"
 
+#include "../_animation/a3_Kinematics.h"
+
 
 //-----------------------------------------------------------------------------
 
@@ -312,7 +314,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
 	spatialPose = hierarchyPoseGroup->hierarchyPoses[p].spatialPose + j;
 	a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, +90.0f);	// rotate whole figure by 90 degrees on Z
-
+	spatialPoseChannel[j] = a3poseChannel_orient_z;
 
 	p = 2;
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
