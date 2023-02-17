@@ -56,8 +56,8 @@ a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, c
 			}
 			else
 			{
-				a3spatialPoseConvert(&hierarchyState->poseGroup->spatialPose_pool[i].transform, &hierarchyState->poseGroup->spatialPose_pool[i], hierarchyState->poseGroup->channels[i], 0);
-				a3spatialPoseCopy(hierarchyState->local_space_pose[i].spatialPose, &hierarchyState->poseGroup->spatialPose_pool[i]);
+				//a3spatialPoseConvert(&hierarchyState->poseGroup->spatialPose_pool[i].transform, &hierarchyState->poseGroup->spatialPose_pool[i], hierarchyState->poseGroup->channels[i], 0);
+				//a3spatialPoseCopy(hierarchyState->local_space_pose[i].spatialPose, &hierarchyState->poseGroup->spatialPose_pool[i]);
 				a3spatialPoseCopy(hierarchyState->object_space_pose[i].spatialPose, hierarchyState->local_space_pose[i].spatialPose);
 			}
 		}

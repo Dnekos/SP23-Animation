@@ -36,6 +36,7 @@
 #include "../_a3_demo_utilities/a3_DemoMacros.h"
 
 
+
 //-----------------------------------------------------------------------------
 // UPDATE
 
@@ -82,7 +83,27 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->object_scene[i].modelMat.m, a3mat4_identity.m);
 	}
 
+	// set sample pose
+	a3ui16 keyframe = demoMode->clipController[0].clip_pool->clip[demoMode->clipController->clip].keyframe_pool->keyframe[demoMode->clipController[0].keyframe].data;
+	for (a3ui32 i = 0; i < demoMode->hierarchyState_skel->hierarchy->numNodes; ++i) 
+	{
+		a3spatialPoseConcat(&demoMode->hierarchyState_skel->sample_pose->spatialPose[i], demoMode->hierarchyPoseGroup_skel->hierarchyPoses[0].spatialPose + i,
+			demoMode->hierarchyPoseGroup_skel->hierarchyPoses[keyframe].spatialPose + i);
+		a3spatialPoseConvert(&demoMode->hierarchyState_skel->local_space_pose->spatialPose[i].transform, &demoMode->hierarchyState_skel->sample_pose->spatialPose[i],
+			demoMode->hierarchyPoseGroup_skel->channels[i], demoMode->hierarchyPoseGroup_skel->euler_order[i]);
+	}
+
+
 	a3kinematicsSolveForward(demoMode->hierarchyState_skel);
+
+//-----------------------------------------------------------------------------
+
+	a3clipControllerUpdate(demoMode->clipController, (a3real)dt);
+	printf("current clip: %s, current frame: %i, local clip time: %f, local frame time: %f\n",
+		demoMode->clipController[0].clip_pool->clip[demoMode->clipController->clip].name,
+		demoMode->clipController[0].keyframe,
+		demoMode->clipController[0].clip_param,
+		demoMode->clipController[0].keyframe_param);
 	
 }
 

@@ -27,6 +27,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+const a3ui32 NUM_POSES = 3;
+
 
 //-----------------------------------------------------------------------------
 
@@ -48,8 +50,10 @@ a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_
 		poseGroup_out->hierarchy = hierarchy;
 		poseGroup_out->hierarchyPoses = (a3_HierarchyPose*)((a3_SpatialPose*)(poseGroup_out->spatialPose_pool) + poseCount * hierarchy->numNodes);
 		// This is probably not correct
-		for (a3ui32 i = 0; i < poseCount; i++)
-			poseGroup_out->hierarchyPoses[i].spatialPose = poseGroup_out->spatialPose_pool;
+		for (a3ui32 i = 0; i < poseCount * hierarchy->numNodes; ++i) 
+		{
+			a3spatialPoseInit(&poseGroup_out->spatialPose_pool[i], a3mat4_identity, a3vec3_zero, a3vec3_one, a3vec3_zero);
+		}
 
 		for (a3ui32 j = 0, i = 0; i < poseCount && j < poseCount * hierarchy->numNodes; ++i, j += hierarchy->numNodes)
 		{
@@ -96,19 +100,27 @@ a3i32 a3hierarchyStateCreate(a3_HierarchyState *state_out, const a3_Hierarchy *h
 	if (state_out && hierarchy && !state_out->hierarchy && hierarchy->nodes)
 	{
 		// determine memory requirements
-		size_t posegroup_size = sizeof(a3_HierarchyPoseGroup) * hierarchy->numNodes;
-		size_t pose_size = sizeof(a3_HierarchyPose) * hierarchy->numNodes;
+		size_t pose_size = sizeof(a3_HierarchyPose) * hierarchy->numNodes * NUM_POSES;
 
 		// allocate everything (one malloc)
-		//state_out->poseGroup = (a3_HierarchyPoseGroup*)malloc(pose_size);
+		state_out->sample_pose = (a3_HierarchyPose*)malloc(pose_size);
+		//state_out->sample_pose->spatialPose = (a3_SpatialPose*)malloc
 
 		// set pointers
 		state_out->hierarchy = hierarchy;
 
+		state_out->local_space_pose = (a3_HierarchyPose*)state_out->sample_pose + 1 * hierarchy->numNodes;
+		state_out->object_space_pose = (a3_HierarchyPose*)state_out->sample_pose + 2 * hierarchy->numNodes;
+
+		/*for (a3ui32 i = 0; i < NUM_POSES * hierarchy->numNodes; ++i)
+		{
+			a3spatialPoseInit(&state_out->sample_pose->spatialPose[i], a3mat4_identity, a3vec3_zero, a3vec3_one, a3vec3_zero);
+		}*/
+
 		// reset all data
-		state_out->sample_pose = (a3_HierarchyPose*)malloc(pose_size);
-		state_out->local_space_pose = (a3_HierarchyPose*)malloc(pose_size);
-		state_out->object_space_pose = (a3_HierarchyPose*)malloc(pose_size);
+		//a3hierarchyPoseReset(state_out->sample_pose, hierarchy->numNodes);
+		//a3hierarchyPoseReset(state_out->local_space_pose, hierarchy->numNodes);
+		//a3hierarchyPoseReset(state_out->object_space_pose, hierarchy->numNodes);
 
 		// done
 		return 1;

@@ -1,3 +1,4 @@
+#include "a3_SpatialPose.h"
 /*
 	Copyright 2011-2020 Daniel S. Buckstein
 	Licensed under the Apache License, Version 2.0 (the "License");
@@ -203,6 +204,26 @@ inline a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_Spatial
 		spatialPose_out->orientation = spatialPose_in->orientation;
 		spatialPose_out->scale = spatialPose_in->scale;
 		spatialPose_out->translation = spatialPose_in->translation;
+		return 1;
+	}
+	return -1;
+}
+
+inline a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_base_in, const a3_SpatialPose* spatialPose_delta_in)
+{
+	if (spatialPose_out && spatialPose_base_in && spatialPose_delta_in) 
+	{
+		spatialPose_out->translation.x = spatialPose_base_in->translation.x + spatialPose_delta_in->translation.x;
+		spatialPose_out->translation.y = spatialPose_base_in->translation.y + spatialPose_delta_in->translation.y;
+		spatialPose_out->translation.z = spatialPose_base_in->translation.z + spatialPose_delta_in->translation.z;
+
+		spatialPose_out->scale.x = spatialPose_base_in->scale.x * spatialPose_delta_in->scale.x;
+		spatialPose_out->scale.y = spatialPose_base_in->scale.y * spatialPose_delta_in->scale.y;
+		spatialPose_out->scale.z = spatialPose_base_in->scale.z * spatialPose_delta_in->scale.z;
+
+		spatialPose_out->orientation.x = spatialPose_base_in->orientation.x + spatialPose_delta_in->orientation.x;
+		spatialPose_out->orientation.y = spatialPose_base_in->orientation.y + spatialPose_delta_in->orientation.y;
+		spatialPose_out->orientation.z = spatialPose_base_in->orientation.z + spatialPose_delta_in->orientation.z;
 		return 1;
 	}
 	return -1;

@@ -306,6 +306,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	spatialPose = hierarchyPoseGroup->hierarchyPoses[p].spatialPose + j;
 	a3spatialPoseSetTranslation(spatialPose, -0.5f, 0.0f, 0.0f);
 
+	//spatial pose = base pose
 
 	// each remaining pose represents a "delta" from the base
 	// initialize the changes where applicable
@@ -315,6 +316,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	spatialPose = hierarchyPoseGroup->hierarchyPoses[p].spatialPose + j;
 	a3spatialPoseSetRotation(spatialPose, 0.0f, 0.0f, +90.0f);	// rotate whole figure by 90 degrees on Z
 	spatialPoseChannel[j] = a3poseChannel_orient_z;
+
+	//spatial pose = delta pose
 
 	p = 2;
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
@@ -327,6 +330,13 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	spatialPose = hierarchyPoseGroup->hierarchyPoses[p].spatialPose + j;
 	a3spatialPoseSetTranslation(spatialPose, +0.3f, +0.4f, -0.5f);	// shift whole figure by some vector
 
+	//sample pose = base concat delta
+
+	//local pose  = sample pose converted to matrices
+
+	//fk - object pose = parent object concat local
+
+	
 
 	// finally set up hierarchy states
 	hierarchyState = demoMode->hierarchyState_skel;
@@ -337,6 +347,44 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	//demoMode->hierarchyState_skel = hierarchyState;
 
 	hierarchyState->poseGroup = hierarchyPoseGroup;
+
+	// LOAD ANIMATION
+	// create pools
+	a3keyframePoolCreate(demoMode->keyframePool, 16);
+	a3clipPoolCreate(demoMode->clipPool, 2);
+	a3clipControllerInit(demoMode->clipController, "main", demoMode->clipPool, 0);
+
+	// set up keyframe values
+	int index = 0;
+	for (a3real i = 0; i < 3; i++)
+	{
+		demoMode->keyframePool->keyframe[index].data = i;
+		demoMode->keyframePool->keyframe[index].index = index;
+		index++;
+	}
+
+	// create clip
+	a3clipInit(&demoMode->clipPool->clip[0], "first", demoMode->keyframePool, 0, 1);
+
+	// set index, shouldn't this be in the array?
+	demoMode->clipPool->clip[0].index = 0;
+
+	// set length of clip
+	a3clipDistributeDuration(&demoMode->clipPool->clip[0], 2);
+
+	a3clipTransitionInit(&demoMode->clipPool->clip[0].forward_transition, demoMode->clipPool, 1);
+
+	// create second clip
+	a3clipInit(&demoMode->clipPool->clip[1], "second", demoMode->keyframePool, 1, 2);
+	demoMode->clipPool->clip[1].index = 1;
+	a3clipDistributeDuration(&demoMode->clipPool->clip[1], 2);
+	a3clipTransitionInit(&demoMode->clipPool->clip[1].forward_transition, demoMode->clipPool, 0);
+
+
+	// set clip on controller
+	a3clipControllerSetClip(demoMode->clipController, demoMode->clipPool, demoMode->clipPool->clip[0].index);
+	// play forward
+	demoMode->clipController->playback_direction = 1;
 }
 
 

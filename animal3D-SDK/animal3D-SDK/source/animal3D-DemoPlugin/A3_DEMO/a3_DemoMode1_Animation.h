@@ -160,6 +160,18 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 					proj_camera_main[1];
 			};
 		};
+
+		union {
+			a3_ClipController clipController[starterMaxCount_clipController];
+			struct {
+				a3_ClipController
+					clipController_main[1];
+			};
+		};
+		a3_ClipPool
+			clipPool[5];
+		a3_KeyframePool
+			keyframePool[20];
 	};
 
 

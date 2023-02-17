@@ -135,7 +135,7 @@ a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* s
 
 // TODO: DO THIS
 // i dont think both parameters are spatial poses, i feel like one should be a hierarchy, or at least dont make it an inout
-a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPose_delta_inout, const a3_SpatialPose* spatialPose_base_in);
+a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_base_in, const a3_SpatialPose* spatialPose_delta_in);
 
 
 //-----------------------------------------------------------------------------
