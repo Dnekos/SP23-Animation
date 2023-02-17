@@ -527,7 +527,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				for (i = 0; i < n; ++i)
 				{
 					// tmpL = FK for this joint * tmpS
-					a3real4x4Product(tmpL.m, demoMode->hierarchyState_skel->object_space_pose[i].spatialPose->transform.m, tmpS.m);
+					a3real4x4Product(tmpL.m, demoMode->hierarchyState_skel->object_space_pose->spatialPose[i].transform.m, tmpS.m);
 
 					a3real4x4Product(tmpLMVP.m, viewProjectionMat.m, tmpL.m);
 					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, tmpLMVP.mm);

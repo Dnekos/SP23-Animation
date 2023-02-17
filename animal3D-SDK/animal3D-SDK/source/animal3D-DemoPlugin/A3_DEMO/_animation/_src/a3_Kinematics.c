@@ -49,14 +49,14 @@ a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, c
 				// Can we just do product here?
 				// a3real4x4Product(hierarchyState->object_space_pose[i].spatialPose->transform.mm, 
 				//	&hierarchyState->object_space_pose[parent].spatialPose->transform.mm, hierarchyState->local_space_pose[i].spatialPose->transform.mm);
-				a3spatialPoseCopy(hierarchyState->object_space_pose[i].spatialPose, hierarchyState->local_space_pose[i].spatialPose);
-				a3real4x4Concat(&hierarchyState->object_space_pose[i].spatialPose->transform.mm, &hierarchyState->object_space_pose[parent].spatialPose->transform.mm);
+				a3spatialPoseCopy(&hierarchyState->object_space_pose->spatialPose[i], &hierarchyState->local_space_pose->spatialPose[i]);
+				a3real4x4Concat(&hierarchyState->object_space_pose->spatialPose[i].transform.mm, &hierarchyState->object_space_pose->spatialPose[parent].transform.mm);
 			}
 			else
 			{
 				//a3spatialPoseConvert(&hierarchyState->poseGroup->spatialPose_pool[i].transform, &hierarchyState->poseGroup->spatialPose_pool[i], hierarchyState->poseGroup->channels[i], 0);
 				//a3spatialPoseCopy(hierarchyState->local_space_pose[i].spatialPose, &hierarchyState->poseGroup->spatialPose_pool[i]);
-				a3spatialPoseCopy(hierarchyState->object_space_pose[i].spatialPose, hierarchyState->local_space_pose[i].spatialPose);
+				a3spatialPoseCopy(&hierarchyState->object_space_pose->spatialPose[i], &hierarchyState->local_space_pose->spatialPose[i]);
 			}
 		}
 		return 1;
