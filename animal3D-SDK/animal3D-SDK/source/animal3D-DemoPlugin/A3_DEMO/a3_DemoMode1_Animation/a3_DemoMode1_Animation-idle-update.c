@@ -27,6 +27,7 @@
 */
 
 //-----------------------------------------------------------------------------
+#include <stdio.h> 
 
 #include "../a3_DemoMode1_Animation.h"
 
@@ -84,16 +85,20 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	}
 
 	// set sample pose
-	a3ui16 keyframe = demoMode->clipController[0].clip_pool->clip[demoMode->clipController->clip].keyframe_pool->keyframe[demoMode->clipController[0].keyframe].data;
+	a3real keyframe = demoMode->clipController[0].clip_pool->clip[demoMode->clipController->clip].keyframe_pool->keyframe[demoMode->clipController[0].keyframe].data;
 	for (a3ui32 i = 0; i < demoMode->hierarchyState_skel->hierarchy->numNodes; ++i) 
 	{
-		a3spatialPoseConcat(&demoMode->hierarchyState_skel->sample_pose->spatialPose[i], demoMode->hierarchyPoseGroup_skel->hierarchyPoses[0].spatialPose + i,
-			demoMode->hierarchyPoseGroup_skel->hierarchyPoses[keyframe].spatialPose + i);
-		a3spatialPoseConvert(&demoMode->hierarchyState_skel->local_space_pose->spatialPose[i].transform, &demoMode->hierarchyState_skel->sample_pose->spatialPose[i],
-			demoMode->hierarchyPoseGroup_skel->channels[i], demoMode->hierarchyPoseGroup_skel->euler_order[i]);
+		// Stage 2
+		a3spatialPoseConcat(&demoMode->hierarchyState_skel->local_space_pose->spatialPose[i], demoMode->hierarchyPoseGroup_skel->hierarchyPoses[0].spatialPose,
+			&demoMode->hierarchyState_skel->sample_pose->spatialPose[(a3ui32)keyframe]);
+		// Stage 3
+		a3spatialPoseConvert(&demoMode->hierarchyState_skel->local_space_pose->spatialPose[i].transform, 
+			&demoMode->hierarchyState_skel->local_space_pose->spatialPose[i],
+			demoMode->hierarchyPoseGroup_skel->channels[i], 
+			demoMode->hierarchyPoseGroup_skel->euler_order[i]);
 	}
 
-
+	// Stage 4
 	a3kinematicsSolveForward(demoMode->hierarchyState_skel);
 
 //-----------------------------------------------------------------------------

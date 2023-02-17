@@ -341,12 +341,13 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// finally set up hierarchy states
 	hierarchyState = demoMode->hierarchyState_skel;
 	hierarchyState->hierarchy = 0;
+	hierarchyState->poseGroup = hierarchyPoseGroup;
 	a3hierarchyStateCreate(hierarchyState, hierarchy);
 
 	// trying to fix this
 	//demoMode->hierarchyState_skel = hierarchyState;
 
-	hierarchyState->poseGroup = hierarchyPoseGroup;
+	//hierarchyState->poseGroup = hierarchyPoseGroup;
 
 	// LOAD ANIMATION
 	// create pools

@@ -43,9 +43,7 @@ a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, c
 		{
 			a3i32 parent = hierarchyState->hierarchy->nodes[i].parentIndex;
 			
-			// make sure the local is the same as the bas
-			
-
+			// make sure we are not the root node
 			if (parent != -1)
 			{
 				// Can we just do product here?

@@ -37,6 +37,9 @@
 #include "_animation/a3_HierarchyStateBlend.h"
 #include "_animation/a3_Kinematics.h"
 
+#include "A3_DEMO/_animation/a3_KeyframeAnimation.h"
+#include "A3_DEMO/_animation/a3_KeyframeAnimationController.h"
+
 
 //-----------------------------------------------------------------------------
 
@@ -62,6 +65,7 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		animationMaxCount_sceneObject = 8,
 		animationMaxCount_cameraObject = 1,
 		animationMaxCount_projector = 1,
+		animationMaxCount_clipController = 3,
 	};
 
 	// scene object rendering program names
@@ -162,7 +166,7 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		};
 
 		union {
-			a3_ClipController clipController[starterMaxCount_clipController];
+			a3_ClipController clipController[animationMaxCount_clipController];
 			struct {
 				a3_ClipController
 					clipController_main[1];

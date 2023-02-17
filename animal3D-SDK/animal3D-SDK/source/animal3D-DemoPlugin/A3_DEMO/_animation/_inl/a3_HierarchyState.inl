@@ -1,3 +1,4 @@
+#include "a3_HierarchyState.h"
 /*
 	Copyright 2011-2020 Daniel S. Buckstein
 
@@ -51,6 +52,16 @@ inline a3i32 a3hierarchyPoseGroupGetNodePoseOffsetIndex(const a3_HierarchyPoseGr
 }
 
 //-----------------------------------------------------------------------------
+
+inline a3i32 a3hierarchyPoseInit(const a3_HierarchyPose* pose_inout)
+{
+	if (pose_inout) 
+	{
+		a3spatialPoseInit(pose_inout->spatialPose, a3mat4_identity, a3vec3_zero, a3vec3_one, a3vec3_zero);
+		return 1;
+	}
+	return -1;
+}
 
 // reset full hierarchy pose
 inline a3i32 a3hierarchyPoseReset(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount)

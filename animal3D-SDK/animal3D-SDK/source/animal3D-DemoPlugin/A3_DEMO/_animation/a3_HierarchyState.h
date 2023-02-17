@@ -116,6 +116,8 @@ a3i32 a3hierarchyPoseGroupGetNodePoseOffsetIndex(const a3_HierarchyPoseGroup *po
 
 //-----------------------------------------------------------------------------
 
+a3i32 a3hierarchyPoseInit(const a3_HierarchyPose* pose_inout);
+
 // reset full hierarchy pose
 a3i32 a3hierarchyPoseReset(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount);
 
