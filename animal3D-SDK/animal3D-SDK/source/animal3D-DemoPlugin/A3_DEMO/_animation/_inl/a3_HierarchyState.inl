@@ -53,12 +53,14 @@ inline a3i32 a3hierarchyPoseGroupGetNodePoseOffsetIndex(const a3_HierarchyPoseGr
 
 //-----------------------------------------------------------------------------
 
-inline a3i32 a3hierarchyPoseInit(const a3_HierarchyPose* pose_inout)
+inline a3i32 a3hierarchyPoseInit(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount)
 {
-	if (pose_inout) 
+	if (pose_inout && nodeCount) 
 	{
-		a3spatialPoseInit(pose_inout->spatialPose, a3mat4_identity, a3vec3_zero, a3vec3_one, a3vec3_zero);
-		return 1;
+		for (a3ui32 i = 0; i < nodeCount; i++)
+		{
+			a3spatialPoseInit(&pose_inout->spatialPose[i], a3mat4_identity, a3vec3_zero, a3vec3_one, a3vec3_zero);
+		}
 	}
 	return -1;
 }

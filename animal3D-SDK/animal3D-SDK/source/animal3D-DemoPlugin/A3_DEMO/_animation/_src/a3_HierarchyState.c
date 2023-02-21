@@ -52,6 +52,7 @@ a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_
 		// set pointers
 		poseGroup_out->hierarchy = hierarchy;
 		poseGroup_out->hierarchyPoses = (a3_HierarchyPose*)((a3_SpatialPose*)(poseGroup_out->spatialPose_pool) + poseGroup_out->spatial_pose_count);
+		poseGroup_out->hierarchyPoses->spatialPose = (a3_SpatialPose*)(poseGroup_out->spatialPose_pool) + poseGroup_out->spatial_pose_count;
 		// This is probably not correct
 		for (a3ui32 i = 0; i < poseGroup_out->spatial_pose_count; ++i)
 		{
@@ -106,26 +107,41 @@ a3i32 a3hierarchyStateCreate(a3_HierarchyState *state_out, const a3_Hierarchy *h
 		size_t pose_size = sizeof(a3_HierarchyPose) * NUM_POSES + sizeof(a3_SpatialPose) * hierarchy->numNodes * NUM_POSES;
 
 		// allocate everything (one malloc)
-		state_out->sample_pose = (a3_HierarchyPose*)malloc(pose_size);
-
-		// Stage 1
-		for (a3ui32 i = 0; i < NUM_POSES * hierarchy->numNodes; ++i) 
+		a3_HierarchyPose* hpbase = (a3_HierarchyPose*)malloc(pose_size);
+		if (!hpbase)
 		{
-			state_out->sample_pose->spatialPose = &state_out->poseGroup->spatialPose_pool[i * hierarchy->numNodes];
+			// bail
 		}
+
+		a3_SpatialPose* spbase = (a3_SpatialPose*)((a3_HierarchyPose*)hpbase + NUM_POSES);
+
+		state_out->sample_pose = hpbase + 0;
+		state_out->sample_pose->spatialPose = spbase + hierarchy->numNodes * 0;
+
+		//// Stage 1 - move this
+		//for (a3ui32 i = 0; i < NUM_POSES * hierarchy->numNodes; ++i) 
+		//{
+		//	state_out->sample_pose->spatialPose = &state_out->poseGroup->spatialPose_pool[i * hierarchy->numNodes];
+		//}
 
 		// set pointers
 		state_out->hierarchy = hierarchy;
 
 		// (target type pointer) ((source type pointer) pointer name + how many source type)
-		state_out->local_space_pose = state_out->sample_pose + 0;
+		state_out->local_space_pose = hpbase + 1;
+		state_out->local_space_pose->spatialPose = spbase + hierarchy->numNodes + 1;
 
-		state_out->object_space_pose = state_out->sample_pose + 1;
+		state_out->object_space_pose = hpbase + 2;
+		state_out->object_space_pose->spatialPose = spbase + hierarchy->numNodes + 2;
+
+		a3hierarchyPoseInit(state_out->sample_pose, hierarchy->numNodes);
+		a3hierarchyPoseInit(state_out->local_space_pose, hierarchy->numNodes);
+		a3hierarchyPoseInit(state_out->object_space_pose, hierarchy->numNodes);
 
 		// reset all data
-		//a3hierarchyPoseReset(state_out->sample_pose, hierarchy->numNodes);
-		//a3hierarchyPoseReset(state_out->local_space_pose, hierarchy->numNodes);
-		//a3hierarchyPoseReset(state_out->object_space_pose, hierarchy->numNodes);
+		a3hierarchyPoseReset(state_out->sample_pose, hierarchy->numNodes);
+		a3hierarchyPoseReset(state_out->local_space_pose, hierarchy->numNodes);
+		a3hierarchyPoseReset(state_out->object_space_pose, hierarchy->numNodes);
 
 		// done
 		return 1;

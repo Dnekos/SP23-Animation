@@ -36,6 +36,8 @@
 
 #include "../_a3_demo_utilities/a3_DemoMacros.h"
 
+const a3ui32 POSES = 3;
+
 
 
 //-----------------------------------------------------------------------------
@@ -84,21 +86,27 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->object_scene[i].modelMat.m, a3mat4_identity.m);
 	}
 
-	// set sample pose
 	a3real keyframe = demoMode->clipController[0].clip_pool->clip[demoMode->clipController->clip].keyframe_pool->keyframe[demoMode->clipController[0].keyframe].data;
+
+	// Stage 1 - set sample pose
+	for (a3ui32 i = 0; i < POSES * demoMode->hierarchy_skel->numNodes; ++i)
+	{
+		demoMode->hierarchyState_skel->sample_pose->spatialPose[i] = demoMode->hierarchyState_skel->poseGroup->spatialPose_pool[i];
+	}
+
 	for (a3ui32 i = 0; i < demoMode->hierarchyState_skel->hierarchy->numNodes; ++i) 
 	{
-		// Stage 2
+		// Stage 2 - concat base with sample to get local
 		a3spatialPoseConcat(&demoMode->hierarchyState_skel->local_space_pose->spatialPose[i], demoMode->hierarchyPoseGroup_skel->hierarchyPoses[0].spatialPose,
-			&demoMode->hierarchyState_skel->sample_pose->spatialPose[(a3ui32)keyframe]);
-		// Stage 3
+			&demoMode->hierarchyState_skel->sample_pose->spatialPose[i]);
+		// Stage 3 - convert local to get matrices
 		a3spatialPoseConvert(&demoMode->hierarchyState_skel->local_space_pose->spatialPose[i].transform, 
 			&demoMode->hierarchyState_skel->local_space_pose->spatialPose[i],
 			demoMode->hierarchyPoseGroup_skel->channels[i], 
 			demoMode->hierarchyPoseGroup_skel->euler_order[i]);
 	}
 
-	// Stage 4
+	// Stage 4 - FK
 	a3kinematicsSolveForward(demoMode->hierarchyState_skel);
 
 //-----------------------------------------------------------------------------
