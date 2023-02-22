@@ -32,6 +32,8 @@
 // A3 spatial pose
 #include "a3_SpatialPose.h"
 
+// sue us
+#include <stdio.h>
 
 //-----------------------------------------------------------------------------
 
@@ -148,6 +150,8 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 // load BVH file, read and store complete pose group and hierarchy
 a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath);
 
+// Read up to whitespace, while skipping comments
+a3ui32 a3readWordFromFile(FILE* ptr, char* output);
 
 //-----------------------------------------------------------------------------
 
