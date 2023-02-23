@@ -192,12 +192,12 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		fPtr = fopen(resourceFilePath, "r");
 
 		char buffer[MAX_CHARACTERS_PER_LINE];
-		a3ui32 numbytes = 0;
+		a3ui32 numbytes = MAX_CHARACTERS_PER_LINE;
 
-		// Assume everything we check here is related to the header
+		// Assume everything we check here is related to the header - failed
 		while (strncmp(buffer, "[SegmentNames&Hierarchy]", numbytes) != 0 )
 		{
-			numbytes = a3readWordFromFile(fPtr, buffer);
+			a3readWordFromFile(fPtr, buffer);
 			if (strncmp(buffer, "NumSegments", numbytes) == 0)
 			{
 				a3readWordFromFile(fPtr, buffer);
@@ -214,10 +214,11 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 
 		// setting up hierarchy
 		a3hierarchyCreate(hierarchy_out, segments, 0);
-		a3ui32 jointIndex = 0, jointParentIndex = -1;
+		a3ui32 jointIndex = 0;
+		a3i32 jointParentIndex = -1;
 
 		// setting up hierarchy pose group (frames+1 is to include base pose)
-		a3hierarchyPoseGroupCreate(poseGroup_out, hierarchy_out, frames+1, a3poseEulerOrder_xyz); // euler order will be a var giv
+		a3hierarchyPoseGroupCreate(poseGroup_out, hierarchy_out, frames+1); // euler order will be a var giv
 
 		// ------------------------------------------------------------------------------------------------------------
 		// theoretically, we could do a for loop instead
@@ -229,13 +230,17 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 			a3readWordFromFile(fPtr, namebuffer);
 
 			// we found the end of the bone creation
-			if (strncmp(namebuffer, "[BasePosition]", numbytes) != 0)
+			if (strncmp(namebuffer, "[BasePosition]", numbytes) == 0)
 				break;
 
 			a3readWordFromFile(fPtr, buffer);
 
 			// GLOBAL fails GetNodeIndex, giving us the root index
 			jointParentIndex = a3hierarchyGetNodeIndex(hierarchy_out, buffer);
+			/*if (strncmp(buffer, "GLOBAL", numbytes) != 0)
+				jointParentIndex = a3hierarchyGetNodeIndex(hierarchy_out, buffer);
+			else
+				jointParentIndex = -1;*/
 
 			// set joint
 			a3hierarchySetNode(hierarchy_out, jointIndex++, jointParentIndex, namebuffer);
@@ -244,32 +249,41 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		// a3hierarchySaveBinary(hierarchy, fileStream);
 
 		// ------------------------------------------------------------------------------------------------------------
-		// base pose time
+		// base pose time - Thinking of making this a function
 		a3_SpatialPose* spatialPose = 0;
 		for (a3ui32 i = 0; i < segments; ++i)
 		{
 			char namebuffer[a3node_nameSize];
-			a3ui32 tx, ty, tz, rx, ry, rz, scale;
+			a3f32 tx, ty, tz, rx, ry, rz, scale;
 			a3readWordFromFile(fPtr, namebuffer);
 			a3readWordFromFile(fPtr, buffer);
-			sscanf(buffer, "%u", &tx);
+			sscanf(buffer, "%f", &tx);
 			a3readWordFromFile(fPtr, buffer);
-			sscanf(buffer, "%u", &ty);
+			sscanf(buffer, "%f", &ty);
 			a3readWordFromFile(fPtr, buffer);
-			sscanf(buffer, "%u", &tz);
+			sscanf(buffer, "%f", &tz);
 			a3readWordFromFile(fPtr, buffer);
-			sscanf(buffer, "%u", &rx);
+			sscanf(buffer, "%f", &rx);
 			a3readWordFromFile(fPtr, buffer);
-			sscanf(buffer, "%u", &ry);
+			sscanf(buffer, "%f", &ry);
 			a3readWordFromFile(fPtr, buffer);
-			sscanf(buffer, "%u", &rz);
+			sscanf(buffer, "%f", &rz);
 			a3readWordFromFile(fPtr, buffer);
-			sscanf(buffer, "%u", &scale);
+			sscanf(buffer, "%f", &scale);
 			jointIndex = a3hierarchyGetNodeIndex(hierarchy_out, namebuffer);
 			spatialPose = poseGroup_out->hierarchyPoses[0].spatialPose + jointIndex;
 			a3spatialPoseSetTranslation(spatialPose, tx, ty, tz);
 			a3spatialPoseSetRotation(spatialPose, rx, ry, rz);
 			a3spatialPoseSetScale(spatialPose, scale, scale, scale);
+
+			/*printf("%s\n", namebuffer);
+			printf("%f\n", tx);
+			printf("%f\n", ty);
+			printf("%f\n", tz);
+			printf("%f\n", rx);
+			printf("%f\n", ry);
+			printf("%f\n", rz);
+			printf("%f\n", scale);*/
 
 			// damn ugly channel setting
 			if (tx != 0)
@@ -290,9 +304,38 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 
 		// ------------------------------------------------------------------------------------------------------------
 		// individual poses
+		// This could also be a function
+		for (a3ui32 i = 0; i < segments; ++i)
+		{
+			char namebuffer[a3node_nameSize];
+			a3readWordFromFile(fPtr, namebuffer);
+			a3i32 index;
+			a3f32 tx, ty, tz, rx, ry, rz, scale;
+			for (a3ui32 j = 0; j < 81; ++j) 
+			{
+				a3readWordFromFile(fPtr, buffer);
+				sscanf(buffer, "%i", &index);
+				a3readWordFromFile(fPtr, buffer);
+				sscanf(buffer, "%f", &tx);
+				a3readWordFromFile(fPtr, buffer);
+				sscanf(buffer, "%f", &ty);
+				a3readWordFromFile(fPtr, buffer);
+				sscanf(buffer, "%f", &tz);
+				a3readWordFromFile(fPtr, buffer);
+				sscanf(buffer, "%f", &rx);
+				a3readWordFromFile(fPtr, buffer);
+				sscanf(buffer, "%f", &ry);
+				a3readWordFromFile(fPtr, buffer);
+				sscanf(buffer, "%f", &rz);
+				a3readWordFromFile(fPtr, buffer);
+				sscanf(buffer, "%f", &scale);
 
+				// do stuff with poses
+			}
+		}
 
-		// Close file
+		// ------------------------------------------------------------------------------------------------------------
+		// Close file - Need to break point here to test output as the program crashes otherwise
 		fclose(fPtr);
 	}
 	return -1;
@@ -330,7 +373,7 @@ a3ui32 a3readWordFromFile(FILE* ptr, char* output)
 				return -1;
 		}
 
-		printf("%s", output);
+		printf("%s\n", output);
 
 		return byts;
 	}
@@ -338,7 +381,17 @@ a3ui32 a3readWordFromFile(FILE* ptr, char* output)
 	return -1;
 }
 
+// Header is already in HierarchyState.h
+a3initBasePoseFromFile(FILE* ptr, char* output)
+{
+	
+}
 
+// Header is already in HierarchyState.h
+a3createIndividualPoses(FILE* ptr, char* output)
+{
+
+}
 
 
 //-----------------------------------------------------------------------------
