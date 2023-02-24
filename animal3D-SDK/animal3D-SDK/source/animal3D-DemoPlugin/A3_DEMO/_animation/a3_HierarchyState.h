@@ -151,13 +151,13 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath);
 
 // Read up to whitespace, while skipping comments
-a3ui32 a3readWordFromFile(FILE* ptr, char* output);
+a3i32 a3readWordFromFile(FILE* ptr, char* output);
 
 // Initialize the base pose and set the data in the Hierarchy Pose Group
-a3initBasePoseFromFile(FILE* ptr, char* output);
+a3i32 a3initBasePoseFromFile(FILE* ptr, char* output);
 
 // Create the indiviudal poses and set the data in the Hierarchy Pose Group
-a3createIndividualPoses(FILE* ptr, char* output)
+a3i32 a3createIndividualPoses(FILE* ptr, char* output);
 
 //-----------------------------------------------------------------------------
 

@@ -180,7 +180,9 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 	if (poseGroup_out && !poseGroup_out->spatial_pose_count && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
 	{
 		a3ui32 segments = 0, frames = 0;
+		char namebuffer[MAX_CHARACTERS_PER_LINE];//[a3node_nameSize];
 
+		a3f32 tx, ty, tz, rx, ry, rz, scale;
 		a3_SpatialPoseEulerOrder order = a3poseEulerOrder_xyz;
 
 		
@@ -224,8 +226,6 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		// theoretically, we could do a for loop instead
 		while (strncmp(buffer, "[BasePosition]", numbytes) != 0)
 		{
-			char namebuffer[a3node_nameSize];
-
 			// grab both names, save one as the actual name
 			a3readWordFromFile(fPtr, namebuffer);
 
@@ -253,9 +253,11 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		a3_SpatialPose* spatialPose = 0;
 		for (a3ui32 i = 0; i < segments; ++i)
 		{
-			char namebuffer[a3node_nameSize];
-			a3f32 tx, ty, tz, rx, ry, rz, scale;
-			a3readWordFromFile(fPtr, namebuffer);
+			char namebuf[MAX_CHARACTERS_PER_LINE];//[a3node_nameSize];
+
+			a3readWordFromFile(fPtr, namebuf);
+			fscanf(fPtr, "%f %f %f %f %f %f %f", &tx, &ty, &tz, &rx, &ry, &rz, &scale);
+			/*
 			a3readWordFromFile(fPtr, buffer);
 			sscanf(buffer, "%f", &tx);
 			a3readWordFromFile(fPtr, buffer);
@@ -270,7 +272,9 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 			sscanf(buffer, "%f", &rz);
 			a3readWordFromFile(fPtr, buffer);
 			sscanf(buffer, "%f", &scale);
-			jointIndex = a3hierarchyGetNodeIndex(hierarchy_out, namebuffer);
+			*/
+
+			jointIndex = a3hierarchyGetNodeIndex(hierarchy_out, namebuf);
 			spatialPose = poseGroup_out->hierarchyPoses[0].spatialPose + jointIndex;
 			a3spatialPoseSetTranslation(spatialPose, tx, ty, tz);
 			a3spatialPoseSetRotation(spatialPose, rx, ry, rz);
@@ -305,38 +309,38 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		// ------------------------------------------------------------------------------------------------------------
 		// individual poses
 		// This could also be a function
-		for (a3ui32 i = 0; i < segments; ++i)
+		for (a3ui32 j = 0; j < segments; ++j)
 		{
-			char namebuffer[a3node_nameSize];
-			a3readWordFromFile(fPtr, namebuffer);
+			a3readWordFromFile(fPtr, buffer);
+			//sscanf(buffer, "%[^A-Za-z0-9]", &namebuffer);
+
+			// get joint index from the name
+			jointIndex = a3hierarchyGetNodeIndex(hierarchy_out, namebuffer);
+
+
 			a3i32 index;
-			a3f32 tx, ty, tz, rx, ry, rz, scale;
-			for (a3ui32 j = 0; j < 81; ++j) 
+			for (a3ui32 p = 0; p < frames; ++p)
 			{
 				a3readWordFromFile(fPtr, buffer);
 				sscanf(buffer, "%i", &index);
-				a3readWordFromFile(fPtr, buffer);
-				sscanf(buffer, "%f", &tx);
-				a3readWordFromFile(fPtr, buffer);
-				sscanf(buffer, "%f", &ty);
-				a3readWordFromFile(fPtr, buffer);
-				sscanf(buffer, "%f", &tz);
-				a3readWordFromFile(fPtr, buffer);
-				sscanf(buffer, "%f", &rx);
-				a3readWordFromFile(fPtr, buffer);
-				sscanf(buffer, "%f", &ry);
-				a3readWordFromFile(fPtr, buffer);
-				sscanf(buffer, "%f", &rz);
-				a3readWordFromFile(fPtr, buffer);
-				sscanf(buffer, "%f", &scale);
+
+				fscanf(fPtr, "%f %f %f %f %f %f %f", &tx, &ty, &tz, &rx, &ry, &rz, &scale);
 
 				// do stuff with poses
+
+				spatialPose = poseGroup_out->hierarchyPoses[index+1].spatialPose + j; // WHEN USING STEVE's, REMOVE +1
+				a3spatialPoseSetTranslation(spatialPose, tx, ty, tz);
+				a3spatialPoseSetRotation(spatialPose, rx, ry, rz);
+				a3spatialPoseSetScale(spatialPose, scale, scale, scale);
+
 			}
+			//namebuffer[0] = 'p';
 		}
 
 		// ------------------------------------------------------------------------------------------------------------
 		// Close file - Need to break point here to test output as the program crashes otherwise
 		fclose(fPtr);
+		return 1;
 	}
 	return -1;
 }
@@ -352,7 +356,7 @@ a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 }
 
 // Read up to whitespace, while skipping comments
-a3ui32 a3readWordFromFile(FILE* ptr, char* output) 
+a3i32 a3readWordFromFile(FILE* ptr, char* output) 
 {
 	if (ptr && output) 
 	{
@@ -382,15 +386,15 @@ a3ui32 a3readWordFromFile(FILE* ptr, char* output)
 }
 
 // Header is already in HierarchyState.h
-a3initBasePoseFromFile(FILE* ptr, char* output)
+a3i32 a3initBasePoseFromFile(FILE* ptr, char* output)
 {
-	
+	return -1;
 }
 
 // Header is already in HierarchyState.h
-a3createIndividualPoses(FILE* ptr, char* output)
+a3i32 a3createIndividualPoses(FILE* ptr, char* output)
 {
-
+	return -1;
 }
 
 

@@ -338,16 +338,17 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	
 
 	// finally set up hierarchy states
-/*
+
 	// base state for skeleton
 	hierarchyState = demoMode->hierarchyState_skel;
 	hierarchyState->hierarchy = 0;
 	a3hierarchyStateCreate(hierarchyState, hierarchy);
-	a3hierarchyPoseCopy(hierarchyState->localSpace, hierarchyPoseGroup->hpose, hierarchy->numNodes);
-	a3hierarchyPoseConvert(hierarchyState->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
+	a3hierarchyPoseCopy(hierarchyState->local_space_pose, hierarchyPoseGroup->hierarchyPoses, hierarchy->numNodes);
+	a3hierarchyPoseConvert(hierarchyState->local_space_pose, hierarchy->numNodes, *hierarchyPoseGroup->channels, *hierarchyPoseGroup->euler_order);
 	a3kinematicsSolveForward(hierarchyState);
 	a3hierarchyStateUpdateObjectInverse(hierarchyState);
-*/
+
+
 	// real-time state
 	hierarchyState = demoMode->hierarchyState_skel + 1;
 	hierarchyState->hierarchy = 0;

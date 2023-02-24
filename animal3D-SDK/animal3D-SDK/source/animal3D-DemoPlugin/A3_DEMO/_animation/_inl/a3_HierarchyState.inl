@@ -36,7 +36,7 @@
 //-----------------------------------------------------------------------------
 
 // get offset to hierarchy pose in contiguous set
-inline a3i32 a3hierarchyPoseGroupGetPoseOffsetIndex(const a3_HierarchyPoseGroup *poseGroup, const a3ui32 poseIndex)
+inline a3i32 a3hierarchyPoseGroupGetPoseOffsetIndex(const a3_HierarchyPoseGroup* poseGroup, const a3ui32 poseIndex)
 {
 	if (poseGroup && poseGroup->hierarchy)
 		return (poseIndex * poseGroup->hierarchy->numNodes);
