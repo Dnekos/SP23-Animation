@@ -17,7 +17,7 @@
 /*
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
-	
+
 	a3_DemoState_loading.c/.cpp
 	Demo state function implementations.
 
@@ -98,7 +98,7 @@ a3real4x4r a3demo_setAtlasTransform_internal(a3real4x4p m_out,
 
 
 // initialize dummy drawable
-inline void a3demo_initDummyDrawable_internal(a3_DemoState *demoState)
+inline void a3demo_initDummyDrawable_internal(a3_DemoState* demoState)
 {
 	// dummy drawable for point drawing: copy any of the existing ones, 
 	//	set vertex count to 1 and primitive to points (0x0000)
@@ -145,12 +145,12 @@ inline void a3demo_initDummyDrawable_internal(a3_DemoState *demoState)
 // LOADING
 
 // utility to load geometry
-void a3demo_loadGeometry(a3_DemoState *demoState)
+void a3demo_loadGeometry(a3_DemoState* demoState)
 {
 	// tmp descriptor for loaded model
 	typedef struct a3_TAG_DEMOSTATELOADEDMODEL {
-		const a3byte *modelFilePath, *skinWeightsFilePath;
-		const a3real *transform;
+		const a3byte* modelFilePath, * skinWeightsFilePath;
+		const a3real* transform;
 		a3_ModelLoaderFlag flag;
 	} a3_DemoStateLoadedModel;
 
@@ -163,9 +163,9 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	};
 
 	// pointer to shared vbo/ibo
-	a3_VertexBuffer *vbo_ibo;
-	a3_VertexArrayDescriptor *vao;
-	a3_VertexDrawable *currentDrawable;
+	a3_VertexBuffer* vbo_ibo;
+	a3_VertexArrayDescriptor* vao;
+	a3_VertexDrawable* currentDrawable;
 	a3ui32 sharedVertexStorage = 0, sharedIndexStorage = 0;
 	a3ui32 numVerts = 0;
 	a3ui32 i, j;
@@ -173,7 +173,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 
 	// file streaming (if requested)
 	a3_FileStream fileStream[1] = { 0 };
-	const a3byte *const geometryStream = "./data/geom_data_gpro_coursebase.dat";
+	const a3byte* const geometryStream = "./data/geom_data_gpro_coursebase.dat";
 
 	// geometry data
 	a3_GeometryData displayShapesData[4] = { 0 };
@@ -193,7 +193,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 
 	// common index format
 	a3_IndexFormatDescriptor sceneCommonIndexFormat[1] = { 0 };
-	a3ui32 bufferOffset, *const bufferOffsetPtr = &bufferOffset;
+	a3ui32 bufferOffset, * const bufferOffsetPtr = &bufferOffset;
 
 
 	// procedural scene objects
@@ -272,7 +272,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 		{
 			if (loadedShapes[i].skinWeightsFilePath)
 			{
-				a3byte *nodeNames[128] = { 0 };
+				a3byte* nodeNames[128] = { 0 };
 				a3ui32 nodeCount = a3hierarchyGetNodeNames(nodeNames, demoState->demoMode1_animation->hierarchy_skel);
 				a3modelLoadOBJSkinWeights(loadedModelsData + i, loadedShapes[i].modelFilePath, loadedShapes[i].flag, loadedShapes[i].skinWeightsFilePath, nodeNames, nodeCount, loadedShapes[i].transform);
 			}
@@ -396,7 +396,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, proceduralShapesData + 4, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
 	currentDrawable = demoState->draw_unit_torus;
 	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, proceduralShapesData + 5, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
-	
+
 	currentDrawable = demoState->draw_teapot;
 	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, loadedModelsData + 0, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
 
@@ -425,7 +425,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 		currentDrawable = demoState->draw_teapot_morph;
 		a3vertexDrawableCreateIndexed(currentDrawable, vao, vbo_ibo, sceneCommonIndexFormat, morphTargetsData[morphModelIndex]->primType, i, morphTargetsData[morphModelIndex]->numIndices);
 	}
-	
+
 
 	// release data when done
 	for (i = 0; i < displayShapesCount; ++i)
@@ -445,7 +445,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 
 
 // utility to load shaders
-void a3demo_loadShaders(a3_DemoState *demoState)
+void a3demo_loadShaders(a3_DemoState* demoState)
 {
 	// structure to help with shader management
 	typedef struct a3_TAG_DEMOSTATESHADER {
@@ -458,7 +458,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 	} a3_DemoStateShader;
 
 	// direct to demo programs
-	a3_DemoStateShaderProgram *currentDemoProg;
+	a3_DemoStateShaderProgram* currentDemoProg;
 	a3i32 flag;
 	a3ui32 i;
 
@@ -542,24 +542,24 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 			{ { { 0 },	"shdr-vs:pass-tb-skin-t-inst",		a3shader_vertex  ,	2,{ A3_DEMO_VS"00-common/e/passTangentBasis_skin_transform_instanced_vs4x.glsl",
 																					A3_DEMO_VS"00-common/e/utilCommon_vs4x.glsl",} } },
 
-			// gs
-			// 00-common
-			{ { { 0 },	"shdr-gs:draw-tb",					a3shader_geometry,	2,{ A3_DEMO_GS"00-common/e/drawTangentBasis_gs4x.glsl",
-																					A3_DEMO_GS"00-common/e/utilCommon_gs4x.glsl",} } },
+																					// gs
+																					// 00-common
+																					{ { { 0 },	"shdr-gs:draw-tb",					a3shader_geometry,	2,{ A3_DEMO_GS"00-common/e/drawTangentBasis_gs4x.glsl",
+																																							A3_DEMO_GS"00-common/e/utilCommon_gs4x.glsl",} } },
 
-			// fs
-			// base
-			{ { { 0 },	"shdr-fs:draw-col-unif",			a3shader_fragment,	1,{ A3_DEMO_FS"e/drawColorUnif_fs4x.glsl" } } },
-			{ { { 0 },	"shdr-fs:draw-col-attr",			a3shader_fragment,	1,{ A3_DEMO_FS"e/drawColorAttrib_fs4x.glsl" } } },
-			// 00-common
-			{ { { 0 },	"shdr-fs:draw-tex",					a3shader_fragment,	1,{ A3_DEMO_FS"00-common/e/drawTexture_fs4x.glsl" } } },
-			{ { { 0 },	"shdr-fs:draw-Lambert",				a3shader_fragment,	2,{ A3_DEMO_FS"00-common/e/drawLambert_fs4x.glsl",
-																					A3_DEMO_FS"00-common/e/utilCommon_fs4x.glsl",} } },
-			{ { { 0 },	"shdr-fs:draw-Phong",				a3shader_fragment,	2,{ A3_DEMO_FS"00-common/e/drawPhong_fs4x.glsl",
-																					A3_DEMO_FS"00-common/e/utilCommon_fs4x.glsl",} } },
-		}
+																																							// fs
+																																							// base
+																																							{ { { 0 },	"shdr-fs:draw-col-unif",			a3shader_fragment,	1,{ A3_DEMO_FS"e/drawColorUnif_fs4x.glsl" } } },
+																																							{ { { 0 },	"shdr-fs:draw-col-attr",			a3shader_fragment,	1,{ A3_DEMO_FS"e/drawColorAttrib_fs4x.glsl" } } },
+																																							// 00-common
+																																							{ { { 0 },	"shdr-fs:draw-tex",					a3shader_fragment,	1,{ A3_DEMO_FS"00-common/e/drawTexture_fs4x.glsl" } } },
+																																							{ { { 0 },	"shdr-fs:draw-Lambert",				a3shader_fragment,	2,{ A3_DEMO_FS"00-common/e/drawLambert_fs4x.glsl",
+																																																									A3_DEMO_FS"00-common/e/utilCommon_fs4x.glsl",} } },
+																																							{ { { 0 },	"shdr-fs:draw-Phong",				a3shader_fragment,	2,{ A3_DEMO_FS"00-common/e/drawPhong_fs4x.glsl",
+																																																									A3_DEMO_FS"00-common/e/utilCommon_fs4x.glsl",} } },
+																																						}
 	};
-	a3_DemoStateShader *const shaderListPtr = (a3_DemoStateShader *)(&shaderList), *shaderPtr;
+	a3_DemoStateShader* const shaderListPtr = (a3_DemoStateShader*)(&shaderList), * shaderPtr;
 	const a3ui32 numUniqueShaders = sizeof(shaderList) / sizeof(a3_DemoStateShader);
 
 
@@ -673,19 +673,9 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_transform_vs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTangentBasis_gs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorAttrib_fs->shader);
-
-	// tangent morph
-	//currentDemoProg = demoState->prog_drawTangentMorph;
-	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tb");
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_morph5_transform_vs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTangentBasis_gs->shader);
-	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorAttrib_fs->shader);
-
-
 	// tangent basis with instancing
 	currentDemoProg = demoState->prog_drawTangentBasis_instanced;
 	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tb-inst");
-	//a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_morph5_transform_vs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_transform_instanced_vs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTangentBasis_gs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorAttrib_fs->shader);
@@ -815,7 +805,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 
 // utility to load textures
 void a3demo_loadTextures(a3_DemoState* demoState)
-{	
+{
 	// indexing
 	a3_Texture* tex;
 	a3ui32 i;
@@ -873,11 +863,6 @@ void a3demo_loadTextures(a3_DemoState* demoState)
 		a3textureActivate(tex, a3tex_unit00);
 		a3textureChangeRepeatMode(a3tex_repeatClamp, a3tex_repeatClamp);	// clamp both axes
 	}
-
-	// Set texure atlas to test sprite sheet texture
-	a3textureAtlasSetTexture(&demoState->texture_atlas, demoState->tex_testsprite);
-	// Allocate 8 rows and 8 columns of cells for texture atlas
-	a3textureAtlasAllocateEvenCells(&demoState->texture_atlas, 8, 8);
 
 
 	// done
@@ -945,43 +930,11 @@ void a3demo_loadFramebuffers(a3_DemoState* demoState)
 	a3textureDeactivate(a3tex_unit00);
 }
 
-void a3demo_loadAnimation(a3_DemoState* demoState)
-{
-	/*  MOVED TO DEMOMODE LOAD
-	// create pools
-	a3keyframePoolCreate(demoState->keyframePool, 16);
-	a3clipPoolCreate(demoState->clipPool, 2);
-
-	// set up keyframe values
-	for (int i = 0; i < 16; i++)
-	{
-		demoState->keyframePool->keyframe[i].data = i;
-	}
-
-	// create clip
-	a3clipInit(&demoState->clipPool->clip[0], "first", demoState->clipPool->clip[0].keyframe_pool, 0, 7);
-
-	// set index, shouldn't this be in the array?
-	demoState->clipPool->clip[0].index = 0;
-
-	// set length of clip
-	a3clipDistributeDuration(&demoState->clipPool->clip[0], 2);
-
-
-	demoState->clipPool->clip[0].forward_transition = (a3_ClipTransition) {.clip_pool = demoState->keyframePool, .clipIndex_pool = 1, .clip_time = 0, .playback_direction = 1};
-
-	// create second clip
-	a3clipInit(&demoState->clipPool->clip[0], "second", demoState->clipPool->clip, 8, 9);
-	demoState->clipPool->clip[0].index = 0;
-	a3clipDistributeDuration(&demoState->clipPool->clip[0], 2);
-
-	*/
-}
 
 //-----------------------------------------------------------------------------
 
 // internal utility for refreshing drawable
-inline void a3_refreshDrawable_internal(a3_VertexDrawable *drawable, a3_VertexArrayDescriptor *vertexArray, a3_IndexBuffer *indexBuffer)
+inline void a3_refreshDrawable_internal(a3_VertexDrawable* drawable, a3_VertexArrayDescriptor* vertexArray, a3_IndexBuffer* indexBuffer)
 {
 	drawable->vertexArray = vertexArray;
 	if (drawable->indexType)

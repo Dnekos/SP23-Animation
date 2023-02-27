@@ -117,22 +117,16 @@ a3i32 a3hierarchyStateCreate(a3_HierarchyState *state_out, const a3_Hierarchy *h
 
 		state_out->sample_pose = hpbase + 0;
 		state_out->sample_pose->spatialPose = spbase + hierarchy->numNodes * 0;
-
-		//// Stage 1 - move this
-		//for (a3ui32 i = 0; i < NUM_POSES * hierarchy->numNodes; ++i) 
-		//{
-		//	state_out->sample_pose->spatialPose = &state_out->poseGroup->spatialPose_pool[i * hierarchy->numNodes];
-		//}
-
+		
 		// set pointers
 		state_out->hierarchy = hierarchy;
 
 		// (target type pointer) ((source type pointer) pointer name + how many source type)
 		state_out->local_space_pose = hpbase + 1;
-		state_out->local_space_pose->spatialPose = spbase + hierarchy->numNodes + 1;
+		state_out->local_space_pose->spatialPose = spbase + hierarchy->numNodes * 1;
 
 		state_out->object_space_pose = hpbase + 2;
-		state_out->object_space_pose->spatialPose = spbase + hierarchy->numNodes + 2;
+		state_out->object_space_pose->spatialPose = spbase + hierarchy->numNodes * 2;
 
 		a3hierarchyPoseInit(state_out->sample_pose, hierarchy->numNodes);
 		a3hierarchyPoseInit(state_out->local_space_pose, hierarchy->numNodes);
