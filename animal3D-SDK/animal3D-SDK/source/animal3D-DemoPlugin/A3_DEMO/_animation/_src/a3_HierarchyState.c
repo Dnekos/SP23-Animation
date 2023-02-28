@@ -174,12 +174,10 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 	if (poseGroup_out && !poseGroup_out->spatial_pose_count && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
 	{
 		a3ui32 segments = 0, frames = 0;
-		char namebuffer[MAX_CHARACTERS_PER_LINE];//[a3node_nameSize];
+		char namebuffer[MAX_CHARACTERS_PER_LINE];
 
 		a3f32 tx, ty, tz, rx, ry, rz, scale;
-		a3_SpatialPoseEulerOrder order = a3poseEulerOrder_xyz;
-
-		
+		a3_SpatialPoseEulerOrder order = a3poseEulerOrder_xyz;		
 
 		// Create file pointer
 		FILE* fPtr;
@@ -204,8 +202,6 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 				a3readWordFromFile(fPtr, buffer);
 				sscanf(buffer, "%u", &frames);
 			}
-			// Do this for EulerRotationOrder ZYX
-			// Do this for ScaleFactor 1.0
 		}
 
 		// setting up hierarchy
@@ -217,7 +213,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		a3hierarchyPoseGroupCreate(poseGroup_out, hierarchy_out, frames+1); // euler order will be a var giv
 
 		// ------------------------------------------------------------------------------------------------------------
-		// theoretically, we could do a for loop instead
+		
 		while (strncmp(buffer, "[BasePosition]", numbytes) != 0)
 		{
 			// grab both names, save one as the actual name
@@ -239,17 +235,19 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 			// set joint
 			a3hierarchySetNode(hierarchy_out, jointIndex++, jointParentIndex, namebuffer);
 		}
-		// load uses this but i dont think its relevant, ask about it
-		// a3hierarchySaveBinary(hierarchy, fileStream);
 
 		// ------------------------------------------------------------------------------------------------------------
-		// base pose time - Thinking of making this a function
+		// 
+		// base pose 
 		a3_SpatialPose* spatialPose = 0;
 		for (a3ui32 i = 0; i < segments; ++i)
 		{
-			char namebuf[MAX_CHARACTERS_PER_LINE];//[a3node_nameSize];
+			// bone name
+			char namebuf[MAX_CHARACTERS_PER_LINE];
 
 			a3readWordFromFile(fPtr, namebuf);
+			
+			// read the translation, rotation, and scale values
 			fscanf(fPtr, "%f %f %f %f %f %f %f", &tx, &ty, &tz, &rx, &ry, &rz, &scale);
 			/*
 			a3readWordFromFile(fPtr, buffer);
@@ -268,7 +266,10 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 			sscanf(buffer, "%f", &scale);
 			*/
 
+			// Get our joint index from name
 			jointIndex = a3hierarchyGetNodeIndex(hierarchy_out, namebuf);
+
+			// Set the values to the spatial pose
 			spatialPose = poseGroup_out->hierarchyPoses[0].spatialPose + jointIndex;
 			a3spatialPoseSetTranslation(spatialPose, tx, ty, tz);
 			a3spatialPoseSetRotation(spatialPose, rx, ry, rz);
@@ -283,7 +284,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 			printf("%f\n", rz);
 			printf("%f\n", scale);*/
 
-			// damn ugly channel setting
+			// Handle Euler Channels
 			if (tx != 0)
 				poseGroup_out->channels[jointIndex] |= a3poseChannel_translate_x;
 			if (ty != 0)
@@ -301,38 +302,37 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		}
 
 		// ------------------------------------------------------------------------------------------------------------
+		
 		// individual poses
-		// This could also be a function
 		for (a3ui32 j = 0; j < segments; ++j)
 		{
 			a3readWordFromFile(fPtr, buffer);
-			//sscanf(buffer, "%[^A-Za-z0-9]", &namebuffer);
 
 			// get joint index from the name
 			jointIndex = a3hierarchyGetNodeIndex(hierarchy_out, namebuffer);
 
-
 			a3i32 index;
 			for (a3ui32 p = 0; p < frames; ++p)
 			{
+				// bone index
 				a3readWordFromFile(fPtr, buffer);
 				sscanf(buffer, "%i", &index);
 
+				// read the translation, rotation, and scale values
 				fscanf(fPtr, "%f %f %f %f %f %f %f", &tx, &ty, &tz, &rx, &ry, &rz, &scale);
 
-				// do stuff with poses
-
-				spatialPose = poseGroup_out->hierarchyPoses[index+1].spatialPose + j; // WHEN USING STEVE's, REMOVE +1
+				// Set the values to the spatial pose
+				spatialPose = poseGroup_out->hierarchyPoses[index].spatialPose + j; // WHEN USING STEVE's, REMOVE +1
 				a3spatialPoseSetTranslation(spatialPose, tx, ty, tz);
 				a3spatialPoseSetRotation(spatialPose, rx, ry, rz);
 				a3spatialPoseSetScale(spatialPose, scale, scale, scale);
 
 			}
-			//namebuffer[0] = 'p';
 		}
 
 		// ------------------------------------------------------------------------------------------------------------
-		// Close file - Need to break point here to test output as the program crashes otherwise
+		
+		// Close file 
 		fclose(fPtr);
 		return 1;
 	}
@@ -379,7 +379,8 @@ a3i32 a3readWordFromFile(FILE* ptr, char* output)
 	return -1;
 }
 
-// Header is already in HierarchyState.h
+
+// Potential Functions to make code cleaner.
 a3i32 a3initBasePoseFromFile(FILE* ptr, char* output)
 {
 	return -1;
