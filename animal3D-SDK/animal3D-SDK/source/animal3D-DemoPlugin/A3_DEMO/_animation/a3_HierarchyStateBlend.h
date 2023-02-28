@@ -68,6 +68,10 @@ a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3_Hierarchy
 
 //-----------------------------------------------------------------------------
 
+// concat full hierarchy pose
+a3i32 a3hierarchyPoseConcat(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_lhs, const a3_HierarchyPose* pose_rhs, const a3ui32 nodeCount);
+
+
 
 #ifdef __cplusplus
 }

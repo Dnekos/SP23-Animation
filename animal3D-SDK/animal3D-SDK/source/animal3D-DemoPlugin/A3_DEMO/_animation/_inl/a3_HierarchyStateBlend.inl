@@ -47,7 +47,11 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 	// done
 	return pose_out;
 }
+inline a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, const a3_SpatialPose* lhs, const a3_SpatialPose* rhs)
+{
 
+	return pose_out;
+}
 
 //-----------------------------------------------------------------------------
 
