@@ -1,4 +1,5 @@
 #include "a3_HierarchyStateBlend.h"
+#include <math.h>
 /*
 	Copyright 2011-2020 Daniel S. Buckstein
 
@@ -136,6 +137,17 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 		//pose_out = a3spatialPoseOpConcat(pose_out, a3spatialPoseOpScale(a3spatialPoseOpConcat(pose_out, pose1, a3spatialPoseOpInvert(pose0)), u), pose0);
 		// 
 		// done
+		//return pose_out;
+
+		pose_out->angles.x =		a3lerp(pose0->angles.x, pose1->angles.x, u);
+		pose_out->angles.y =		a3lerp(pose0->angles.y, pose1->angles.y, u);
+		pose_out->angles.z =		a3lerp(pose0->angles.z, pose1->angles.z, u);
+		pose_out->scale.x =			pow(pose1->scale.x / pose0->scale.x, u) * pose0->scale.x;
+		pose_out->scale.y =			pow(pose1->scale.y / pose0->scale.y, u) * pose0->scale.y;
+		pose_out->scale.z =			pow(pose1->scale.y / pose0->scale.y, u) * pose0->scale.y;
+		pose_out->translation.x =	a3lerp(pose0->translation.x, pose1->translation.x, u);
+		pose_out->translation.y =	a3lerp(pose0->translation.y, pose1->translation.y, u);
+		pose_out->translation.z =	a3lerp(pose0->translation.z, pose1->translation.z, u);
 		return pose_out;
 	}
 	return -1;
@@ -147,6 +159,30 @@ inline a3_SpatialPose* a3spatialPoseOpCUBIC(a3_SpatialPose* pose_out, a3_Spatial
 	{
 		// Check Slide 90 for Catmull
 		// Check Slide 108 for Hermite
+		a3_SpatialPose* t_posen1, *t_pose0, *t_pose1, *t_pose2;
+		t_posen1 = (a3_SpatialPose*)malloc(sizeof(a3_SpatialPose));
+		t_pose0 = (a3_SpatialPose*)malloc(sizeof(a3_SpatialPose));
+		t_pose1 = (a3_SpatialPose*)malloc(sizeof(a3_SpatialPose));
+		t_pose2 = (a3_SpatialPose*)malloc(sizeof(a3_SpatialPose));
+		t_posen1 = a3spatialPoseOpCopy(t_posen1, posen1);
+		t_pose0 =a3spatialPoseOpCopy(t_pose0, pose0);
+		t_pose1 =a3spatialPoseOpCopy(t_pose1, pose1);
+		t_pose2 =a3spatialPoseOpCopy(t_pose2, pose2);
+
+
+		pose_out = a3spatialPoseOpScale(
+			a3spatialPoseOpConcat(pose_out, 
+				a3spatialPoseOpConcat(pose_out, 
+					a3spatialPoseOpScale(t_posen1, -u + 2 * u * u - u * u * u),
+					a3spatialPoseOpScale(t_pose0, 2 - 5 * u * u + 3 * u * u * u)),
+				a3spatialPoseOpConcat(t_pose1, 
+					a3spatialPoseOpScale(t_pose1, u + 4 * u * u - 3u * u * u),
+					a3spatialPoseOpScale(t_pose2, -u * u + u * u * u))), 0.5f);
+		free(t_posen1);
+		free(t_pose0);
+		free(t_pose1);
+		free(t_pose2);
+
 		return pose_out;
 	}
 	return -1;
@@ -176,12 +212,13 @@ inline a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3real con
 {
 	if (pose_out) 
 	{
+
 		pose_out->angles.x *= u;
 		pose_out->angles.y *= u;
 		pose_out->angles.z *= u;
-		pose_out->scale.x *= u;
-		pose_out->scale.y *= u;
-		pose_out->scale.z *= u;
+		pose_out->scale.x = powf(pose_out->scale.x, u);
+		pose_out->scale.y = powf(pose_out->scale.y, u);
+		pose_out->scale.z = powf(pose_out->scale.z, u);
 		pose_out->translation.x *= u;
 		pose_out->translation.y *= u;
 		pose_out->translation.z *= u;
@@ -207,6 +244,7 @@ inline a3_SpatialPose* a3spatialPoseOpBiNearest(a3_SpatialPose* pose_out, a3_Spa
 {
 	if(pose_out && pose00 && pose01 && pose10 && pose11)
 	{
+		pose_out = a3spatialPoseOpNEAR(pose_out, a3spatialPoseOpNEAR(pose_out, pose00, pose01, u), a3spatialPoseOpNEAR(pose_out, pose10, pose11, u), u);
 		return pose_out;
 	}
 	return -1;
