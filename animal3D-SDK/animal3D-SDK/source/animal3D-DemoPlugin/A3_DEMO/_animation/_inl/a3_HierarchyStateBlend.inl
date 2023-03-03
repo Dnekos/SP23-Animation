@@ -34,11 +34,17 @@
 // pointer-based reset/identity operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 {
-	pose_out->transform = a3mat4_identity;
-	// ...
+	if (pose_out) 
+	{
+		pose_out->transform = a3mat4_identity;
+		pose_out->angles = a3vec4_zero;
+		pose_out->translation = a3vec4_zero;
+		pose_out->scale = a3vec4_one;
 
-	// done
-	return pose_out;
+		// done
+		return pose_out;
+	}
+	return -1;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpConstruct(a3_SpatialPose* pose_out, a3vec3 rotation, a3vec3 scale, a3vec3 translation)
@@ -87,7 +93,7 @@ inline a3_SpatialPose* a3spatialPoseOpInvert(a3_SpatialPose* pose_in)
 
 inline a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, const a3_SpatialPose* lhs, const a3_SpatialPose* rhs)
 {
-	if (lhs && rhs)
+	if (pose_out && lhs && rhs)
 	{
 		pose_out->angles.x = lhs->angles.x + rhs->angles.x;
 		pose_out->angles.y = lhs->angles.y + rhs->angles.y;
@@ -106,7 +112,7 @@ inline a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, const a3_
 
 inline a3_SpatialPose* a3spatialPoseOpNEAR(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u)
 {
-	if (pose0 && pose1)
+	if (pose_out && pose0 && pose1)
 	{
 		if (u < 5)
 		{
@@ -127,7 +133,7 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 {
 	if (pose_out && pose0 && pose1)
 	{
-		//pose_out = a3spatialPoseOpConcat(a3spatialPoseOpScale(a3spatialPoseOpConcat(pose1, a3spatialPoseOpInvert(pose0)), u), pose0);
+		//pose_out = a3spatialPoseOpConcat(pose_out, a3spatialPoseOpScale(a3spatialPoseOpConcat(pose_out, pose1, a3spatialPoseOpInvert(pose0)), u), pose0);
 		// 
 		// done
 		return pose_out;
@@ -137,7 +143,7 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 
 inline a3_SpatialPose* a3spatialPoseOpCUBIC(a3_SpatialPose* pose_out, a3_SpatialPose const* posen1, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose2, a3real const u)
 {
-	if(pose_out, posen1, pose0, pose1, pose2)
+	if(pose_out && posen1 && pose0 && pose1 && pose2)
 	{
 		// Check Slide 90 for Catmull
 		// Check Slide 108 for Hermite
@@ -148,7 +154,7 @@ inline a3_SpatialPose* a3spatialPoseOpCUBIC(a3_SpatialPose* pose_out, a3_Spatial
 
 inline a3_SpatialPose* a3spatialPoseOpDeconcat(a3_SpatialPose* pose_out, const a3_SpatialPose* lhs, const a3_SpatialPose* rhs)
 {
-	if (lhs && rhs)
+	if (pose_out && lhs && rhs)
 	{
 		pose_out->angles.x = lhs->angles.x - rhs->angles.x;
 		pose_out->angles.y = lhs->angles.y - rhs->angles.y;
@@ -190,6 +196,8 @@ inline a3_SpatialPose* a3spatialPoseOpTriangular(a3_SpatialPose* pose_out, a3_Sp
 {
 	if(pose_out && pose0 && pose1 && pose2)
 	{
+		a3real u3 = 1 - u2 - u1;
+		//a3_SpatialPose poseX = a3spatialPoseOpConcat(pose_out, a3spatialPoseOpScale(pose0, u1), ) 
 		return pose_out;
 	}
 	return -1;
@@ -208,7 +216,7 @@ inline a3_SpatialPose* a3spatialPoseOpBiLinear(a3_SpatialPose* pose_out, a3_Spat
 {
 	if (pose_out && pose00 && pose01 && pose10 && pose11) 
 	{
-		//pose_out = a3spatialPoseOpLERP(a3spatialPoseOpLERP(pose00, pose01, u0), a3spatialPoseOpLERP(pose10, pose11, u0), u1);
+		//pose_out = a3spatialPoseOpLERP(pose_out, a3spatialPoseOpLERP(pose_out, pose00, pose01, u0), a3spatialPoseOpLERP(pose_out, pose10, pose11, u0), u1);
 		// Check Slide 34 of interpolation slides
 		return pose_out;
 	}
