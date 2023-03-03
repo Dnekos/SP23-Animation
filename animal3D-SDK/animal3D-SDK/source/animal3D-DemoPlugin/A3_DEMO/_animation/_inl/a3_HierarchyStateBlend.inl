@@ -43,28 +43,83 @@ inline a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 
 inline a3_SpatialPose* a3spatialPoseOpConstruct(a3_SpatialPose* pose_out, a3vec3 rotation, a3vec3 scale, a3vec3 translation)
 {
-	return pose_out;
+	// TODO: How do we validate the controls? Also, why are spatial poses vec4s??
+	if (pose_out)
+	{
+		a3spatialPoseSetRotation(pose_out, rotation.x, rotation.y, rotation.z);
+		a3spatialPoseSetScale(pose_out, scale.x, scale.y, scale.z);
+		a3spatialPoseSetTranslation(pose_out, translation.x, translation.y, translation.z);
+	}
+
+	return -1;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialPose* pose_in)
 {
-	return pose_out;
+	if (pose_out && pose_in)
+	{
+		pose_out->translation = pose_in->translation;
+		pose_out->transform = pose_in->transform;
+		pose_out->orientation = pose_in->orientation;
+		pose_out->scale = pose_in->scale;
+		return pose_out;
+	}
+	return -1;
 }
 
-inline a3_SpatialPose* a3spatialPoseOpInvert(a3_SpatialPose* pose_out)
+inline a3_SpatialPose* a3spatialPoseOpInvert(a3_SpatialPose* pose_in)
 {
-	return pose_out;
+	if (pose_in)
+	{
+		pose_in->angles.x = -pose_in->angles.x;
+		pose_in->angles.y = -pose_in->angles.y;
+		pose_in->angles.z = -pose_in->angles.z;
+		pose_in->scale.x = 1 / pose_in->scale.x;
+		pose_in->scale.y = 1 / pose_in->scale.y;
+		pose_in->scale.z = 1 / pose_in->scale.z;
+		pose_in->translation.x = -pose_in->translation.x;
+		pose_in->translation.y = -pose_in->translation.y;
+		pose_in->translation.z = -pose_in->translation.z;
+		return pose_in;
+	}
+	return -1;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, const a3_SpatialPose* lhs, const a3_SpatialPose* rhs)
 {
+	if (lhs && rhs)
+	{
+		pose_out->angles.x = lhs->angles.x + rhs->angles.x;
+		pose_out->angles.y = lhs->angles.y + rhs->angles.y;
+		pose_out->angles.z = lhs->angles.z + rhs->angles.z;
+		pose_out->scale.x = lhs->scale.x * rhs->scale.x;
+		pose_out->scale.y = lhs->scale.y * rhs->scale.y;
+		pose_out->scale.z = lhs->scale.z * rhs->scale.z;
+		pose_out->translation.x = lhs->translation.x + rhs->translation.x;
+		pose_out->translation.y = lhs->translation.y + rhs->translation.y;
+		pose_out->translation.z = lhs->translation.z + rhs->translation.z;
+		return pose_out;
+	}
 
-	return pose_out;
+	return -1;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpNEAR(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u)
 {
-	return pose_out;
+	if (pose0 && pose1)
+	{
+		if (u < 5)
+		{
+			a3spatialPoseOpCopy(pose_out, pose0);
+			return pose_out;
+		}
+		else
+		{
+			a3spatialPoseOpCopy(pose_out, pose1);
+			return pose_out;
+		}
+	}
+	return -1;
 }
 
 // pointer-based LERP operation for single spatial pose
@@ -122,6 +177,18 @@ inline a3_SpatialPose a3spatialPoseDOpIdentity()
 inline a3_SpatialPose a3spatialPoseDOpConstruct(a3vec3 rotation, a3vec3 scale, a3vec3 translation)
 {
 	a3_SpatialPose result = { 0 };
+	result.angles.x = a3trigValid_sind(rotation.x);
+	result.angles.y = a3trigValid_sind(rotation.y);
+	result.angles.z = a3trigValid_sind(rotation.z);
+
+	result.scale.x = scale.x;
+	result.scale.y = scale.y;
+	result.scale.z = scale.z;
+
+	result.translation.x = translation.x;
+	result.translation.y = translation.y;
+	result.translation.z = translation.z;
+
 
 	return result;
 }
@@ -129,29 +196,49 @@ inline a3_SpatialPose a3spatialPoseDOpConstruct(a3vec3 rotation, a3vec3 scale, a
 inline a3_SpatialPose a3spatialPoseDOpCopy(a3_SpatialPose pose_in)
 {
 	a3_SpatialPose result = { 0 };
-
+	result.translation = pose_in.translation;
+	result.transform = pose_in.transform;
+	result.orientation = pose_in.orientation;
+	result.scale = pose_in.scale;
 	return result;
 }
 
-inline a3_SpatialPose a3spatialPoseDOpInvert()
+inline a3_SpatialPose a3spatialPoseDOpInvert(a3_SpatialPose pose_in)
 {
-	a3_SpatialPose result = { 0 };
-
-	return result;
+	a3_SpatialPose out;
+	out.angles.x = -pose_in.angles.x;
+	out.angles.y = -pose_in.angles.y;
+	out.angles.z = -pose_in.angles.z;
+	out.scale.x = 1 / pose_in.scale.x;
+	out.scale.y = 1 / pose_in.scale.y;
+	out.scale.z = 1 / pose_in.scale.z;
+	out.translation.x = -pose_in.translation.x;
+	out.translation.y = -pose_in.translation.y;
+	out.translation.z = -pose_in.translation.z;
+	return out;
 }
 
 inline a3_SpatialPose a3spatialPoseDOpConcat(const a3_SpatialPose lhs, const a3_SpatialPose rhs)
 {
-	a3_SpatialPose result = { 0 };
-
-	return result;
+	a3_SpatialPose out;
+	out.angles.x = lhs.angles.x + rhs.angles.x;
+	out.angles.y = lhs.angles.y + rhs.angles.y;
+	out.angles.z = lhs.angles.z + rhs.angles.z;
+	out.scale.x = lhs.scale.x * rhs.scale.x;
+	out.scale.y = lhs.scale.y * rhs.scale.y;
+	out.scale.z = lhs.scale.z * rhs.scale.z;
+	out.translation.x = lhs.translation.x + rhs.translation.x;
+	out.translation.y = lhs.translation.y + rhs.translation.y;
+	out.translation.z = lhs.translation.z + rhs.translation.z;
+	return out;
 }
 
 inline a3_SpatialPose a3spatialPoseDOpNEAR(a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u)
 {
-	a3_SpatialPose result = { 0 };
-
-	return result;
+	if (u < 5)
+		return pose0;
+	else
+		return pose1;
 }
 
 // data-based LERP
