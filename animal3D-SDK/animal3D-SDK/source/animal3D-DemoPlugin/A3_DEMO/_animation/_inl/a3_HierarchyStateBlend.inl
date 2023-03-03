@@ -231,10 +231,22 @@ inline a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3real con
 
 inline a3_SpatialPose* a3spatialPoseOpTriangular(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose2, a3real const u1, a3real const u2)
 {
-	if(pose_out && pose0 && pose1 && pose2)
+	if (pose_out && pose0 && pose1 && pose2)
 	{
 		a3real u3 = 1 - u2 - u1;
-		//a3_SpatialPose poseX = a3spatialPoseOpConcat(pose_out, a3spatialPoseOpScale(pose0, u1), ) 
+
+		pose_out->angles.x = pose0->angles.x * u1 + pose1->angles.x * u2 + pose2->angles.x * u3;
+		pose_out->angles.y = pose0->angles.y * u1 + pose1->angles.y * u2 + pose2->angles.y * u3;
+		pose_out->angles.z = pose0->angles.z * u1 + pose1->angles.z * u2 + pose2->angles.z * u3;
+
+		pose_out->scale.x = powf(pose0->scale.x, u1) * powf(pose1->scale.x, u2) * powf(pose2->scale.x, u3);
+		pose_out->scale.y = powf(pose0->scale.y, u1) * powf(pose1->scale.y, u2) * powf(pose2->scale.y, u3);
+		pose_out->scale.z = powf(pose0->scale.z, u1) * powf(pose1->scale.z, u2) * powf(pose2->scale.z, u3);
+
+		pose_out->translation.x = pose0->translation.x * u1 + pose1->translation.x * u2 + pose2->translation.x * u3;
+		pose_out->translation.y = pose0->translation.y * u1 + pose1->translation.y * u2 + pose2->translation.y * u3;
+		pose_out->translation.z = pose0->translation.z * u1 + pose1->translation.z * u2 + pose2->translation.z * u3;
+
 		return pose_out;
 	}
 	return -1;
