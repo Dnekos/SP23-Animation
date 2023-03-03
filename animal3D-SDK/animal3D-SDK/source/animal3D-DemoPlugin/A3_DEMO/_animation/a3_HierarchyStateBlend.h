@@ -48,13 +48,13 @@ a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out);
 a3_SpatialPose* a3spatialPoseOpConstruct(a3_SpatialPose* pose_out, a3vec3 rotation, a3vec3 scale, a3vec3 translation);
 
 // pointer-based copy operation for single spatial pose
-a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialPose* pose_in);
+a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in);
 
 // pointer-based inversion / negation operation for single spatial pose
 a3_SpatialPose* a3spatialPoseOpInvert(a3_SpatialPose* pose_out);
 
 // pointer-based addition operation for single spatial pose
-a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, const a3_SpatialPose* lhs, const a3_SpatialPose* rhs);
+a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, a3_SpatialPose const* lhs, a3_SpatialPose const* rhs);
 
 // pointer-based Nearest operation for single spatial pose
 a3_SpatialPose* a3spatialPoseOpNEAR(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, 
@@ -71,7 +71,7 @@ a3_SpatialPose* a3spatialPoseOpCUBIC(a3_SpatialPose* pose_out, a3_SpatialPose co
 // DERIVATIVE OPERATIONS
 
 // pointer-based subtraction / difference operation for single spatial pose
-a3_SpatialPose* a3spatialPoseOpDeconcat(a3_SpatialPose* pose_out, const a3_SpatialPose* lhs, const a3_SpatialPose* rhs);
+a3_SpatialPose* a3spatialPoseOpDeconcat(a3_SpatialPose* pose_out, a3_SpatialPose const* lhs, a3_SpatialPose const* rhs);
 
 // pointer-based multiplication / scale operation for single spatial pose
 a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3real const u);
@@ -108,10 +108,10 @@ a3_SpatialPose a3spatialPoseDOpConstruct(a3vec3 rotation, a3vec3 scale, a3vec3 t
 a3_SpatialPose a3spatialPoseDOpCopy(a3_SpatialPose pose_in);
 
 // data-based inversion / negation operation for single spatial pose
-a3_SpatialPose a3spatialPoseDOpInvert();
+a3_SpatialPose a3spatialPoseDOpInvert(a3_SpatialPose pose_in);
 
 // data-based addition operation for single spatial pose
-a3_SpatialPose a3spatialPoseDOpConcat(const a3_SpatialPose lhs, const a3_SpatialPose rhs);
+a3_SpatialPose a3spatialPoseDOpConcat(a3_SpatialPose const lhs, a3_SpatialPose const rhs);
 
 // data-based Nearest operation for single spatial pose
 a3_SpatialPose a3spatialPoseDOpNEAR(a3_SpatialPose const pose0, a3_SpatialPose const pose1,
@@ -128,7 +128,7 @@ a3_SpatialPose a3spatialPoseDOpCUBIC(a3_SpatialPose const posen1, a3_SpatialPose
 // DERIVATIVE OPERATIONS
 
 // data-based subtraction / difference operation for single spatial pose
-a3_SpatialPose a3spatialPoseDOpDeconcat(const a3_SpatialPose lhs, const a3_SpatialPose rhs);
+a3_SpatialPose a3spatialPoseDOpDeconcat(a3_SpatialPose const lhs, a3_SpatialPose const rhs);
 
 // data-based multiplication / scale operation for single spatial pose
 a3_SpatialPose a3spatialPoseDOpScale(a3real const u);
@@ -165,7 +165,7 @@ a3_HierarchyPose* a3hierarchyPoseOpConstruct(a3_HierarchyPose* pose_out, a3vec3 
 	const a3ui32 nodeCount);
 
 // pointer-based copy operation for hierarchical pose
-a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose_in, 
+a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose_in, 
 	const a3ui32 nodeCount);
 
 // pointer-based inversion / negation operation for hierarchical pose
@@ -173,7 +173,7 @@ a3_HierarchyPose* a3hierarchyPoseOpInvert(a3_HierarchyPose* pose_out,
 	const a3ui32 nodeCount);
 
 // pointer-based addition operation for hierarchical pose
-a3_HierarchyPose* a3hierarchyPoseOpConcat(a3_HierarchyPose* pose_out, const a3_HierarchyPose* lhs, const a3_HierarchyPose* rhs, 
+a3_HierarchyPose* a3hierarchyPoseOpConcat(a3_HierarchyPose* pose_out, a3_HierarchyPose const* lhs, a3_HierarchyPose const* rhs, 
 	const a3ui32 nodeCount);
 
 // pointer-based Nearest operation for hierarchical pose
@@ -191,7 +191,7 @@ a3_HierarchyPose* a3hierarchyPoseOpCUBIC(a3_HierarchyPose* pose_out, a3_Hierarch
 // DERIVATIVE OPERATIONS
 
 // pointer-based subtraction / difference operation for hierarchical pose
-a3_HierarchyPose* a3hierarchyPoseOpDeconcat(a3_HierarchyPose* pose_out, const a3_HierarchyPose* lhs, const a3_HierarchyPose* rhs, const a3ui32 nodeCount);
+a3_HierarchyPose* a3hierarchyPoseOpDeconcat(a3_HierarchyPose* pose_out, a3_HierarchyPose const* lhs, a3_HierarchyPose const* rhs, const a3ui32 nodeCount);
 
 // pointer-based multiplication / scale operation for hierarchical pose
 a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3real const u, const a3ui32 nodeCount);

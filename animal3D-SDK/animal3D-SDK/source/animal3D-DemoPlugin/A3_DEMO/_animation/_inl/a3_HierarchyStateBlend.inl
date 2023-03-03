@@ -1,5 +1,6 @@
 #include "a3_HierarchyStateBlend.h"
 #include <math.h>
+#include <stdlib.h>
 /*
 	Copyright 2011-2020 Daniel S. Buckstein
 
@@ -45,7 +46,7 @@ inline a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 		// done
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpConstruct(a3_SpatialPose* pose_out, a3vec3 rotation, a3vec3 scale, a3vec3 translation)
@@ -58,10 +59,10 @@ inline a3_SpatialPose* a3spatialPoseOpConstruct(a3_SpatialPose* pose_out, a3vec3
 		a3spatialPoseSetTranslation(pose_out, translation.x, translation.y, translation.z);
 	}
 
-	return -1;
+	return 0;
 }
 
-inline a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialPose* pose_in)
+inline a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in)
 {
 	if (pose_out && pose_in)
 	{
@@ -71,7 +72,7 @@ inline a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialP
 		pose_out->scale = pose_in->scale;
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpInvert(a3_SpatialPose* pose_in)
@@ -89,10 +90,10 @@ inline a3_SpatialPose* a3spatialPoseOpInvert(a3_SpatialPose* pose_in)
 		pose_in->translation.z = -pose_in->translation.z;
 		return pose_in;
 	}
-	return -1;
+	return 0;
 }
 
-inline a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, const a3_SpatialPose* lhs, const a3_SpatialPose* rhs)
+inline a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, a3_SpatialPose const* lhs, a3_SpatialPose const* rhs)
 {
 	if (pose_out && lhs && rhs)
 	{
@@ -108,7 +109,7 @@ inline a3_SpatialPose* a3spatialPoseOpConcat(a3_SpatialPose* pose_out, const a3_
 		return pose_out;
 	}
 
-	return -1;
+	return 0;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpNEAR(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u)
@@ -126,7 +127,7 @@ inline a3_SpatialPose* a3spatialPoseOpNEAR(a3_SpatialPose* pose_out, a3_SpatialP
 			return pose_out;
 		}
 	}
-	return -1;
+	return 0;
 }
 
 // pointer-based LERP operation for single spatial pose
@@ -142,15 +143,15 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 		pose_out->angles.x =		a3lerp(pose0->angles.x, pose1->angles.x, u);
 		pose_out->angles.y =		a3lerp(pose0->angles.y, pose1->angles.y, u);
 		pose_out->angles.z =		a3lerp(pose0->angles.z, pose1->angles.z, u);
-		pose_out->scale.x =			pow(pose1->scale.x / pose0->scale.x, u) * pose0->scale.x;
-		pose_out->scale.y =			pow(pose1->scale.y / pose0->scale.y, u) * pose0->scale.y;
-		pose_out->scale.z =			pow(pose1->scale.y / pose0->scale.y, u) * pose0->scale.y;
+		pose_out->scale.x =			(a3real)pow(pose1->scale.x / pose0->scale.x, u) * pose0->scale.x;
+		pose_out->scale.y =			(a3real)pow(pose1->scale.y / pose0->scale.y, u) * pose0->scale.y;
+		pose_out->scale.z =			(a3real)pow(pose1->scale.y / pose0->scale.y, u) * pose0->scale.y;
 		pose_out->translation.x =	a3lerp(pose0->translation.x, pose1->translation.x, u);
 		pose_out->translation.y =	a3lerp(pose0->translation.y, pose1->translation.y, u);
 		pose_out->translation.z =	a3lerp(pose0->translation.z, pose1->translation.z, u);
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpCUBIC(a3_SpatialPose* pose_out, a3_SpatialPose const* posen1, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose2, a3real const u)
@@ -165,9 +166,9 @@ inline a3_SpatialPose* a3spatialPoseOpCUBIC(a3_SpatialPose* pose_out, a3_Spatial
 		t_pose1 = (a3_SpatialPose*)malloc(sizeof(a3_SpatialPose));
 		t_pose2 = (a3_SpatialPose*)malloc(sizeof(a3_SpatialPose));
 		t_posen1 = a3spatialPoseOpCopy(t_posen1, posen1);
-		t_pose0 =a3spatialPoseOpCopy(t_pose0, pose0);
-		t_pose1 =a3spatialPoseOpCopy(t_pose1, pose1);
-		t_pose2 =a3spatialPoseOpCopy(t_pose2, pose2);
+		t_pose0 = a3spatialPoseOpCopy(t_pose0, pose0);
+		t_pose1 = a3spatialPoseOpCopy(t_pose1, pose1);
+		t_pose2 = a3spatialPoseOpCopy(t_pose2, pose2);
 
 
 		pose_out = a3spatialPoseOpScale(
@@ -178,6 +179,7 @@ inline a3_SpatialPose* a3spatialPoseOpCUBIC(a3_SpatialPose* pose_out, a3_Spatial
 				a3spatialPoseOpConcat(t_pose1, 
 					a3spatialPoseOpScale(t_pose1, u + 4 * u * u - 3u * u * u),
 					a3spatialPoseOpScale(t_pose2, -u * u + u * u * u))), 0.5f);
+
 		free(t_posen1);
 		free(t_pose0);
 		free(t_pose1);
@@ -185,10 +187,10 @@ inline a3_SpatialPose* a3spatialPoseOpCUBIC(a3_SpatialPose* pose_out, a3_Spatial
 
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
-inline a3_SpatialPose* a3spatialPoseOpDeconcat(a3_SpatialPose* pose_out, const a3_SpatialPose* lhs, const a3_SpatialPose* rhs)
+inline a3_SpatialPose* a3spatialPoseOpDeconcat(a3_SpatialPose* pose_out, a3_SpatialPose const* lhs, a3_SpatialPose const* rhs)
 {
 	if (pose_out && lhs && rhs)
 	{
@@ -205,7 +207,7 @@ inline a3_SpatialPose* a3spatialPoseOpDeconcat(a3_SpatialPose* pose_out, const a
 		return pose_out;
 	}
 
-	return -1;
+	return 0;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3real const u)
@@ -216,9 +218,9 @@ inline a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3real con
 		pose_out->angles.x *= u;
 		pose_out->angles.y *= u;
 		pose_out->angles.z *= u;
-		pose_out->scale.x = powf(pose_out->scale.x, u);
-		pose_out->scale.y = powf(pose_out->scale.y, u);
-		pose_out->scale.z = powf(pose_out->scale.z, u);
+		pose_out->scale.x = (a3real)powf(pose_out->scale.x, u);
+		pose_out->scale.y = (a3real)powf(pose_out->scale.y, u);
+		pose_out->scale.z = (a3real)powf(pose_out->scale.z, u);
 		pose_out->translation.x *= u;
 		pose_out->translation.y *= u;
 		pose_out->translation.z *= u;
@@ -226,7 +228,7 @@ inline a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3real con
 		return pose_out;
 
 	}
-	return -1;
+	return 0;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpTriangular(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose2, a3real const u1, a3real const u2)
@@ -239,9 +241,9 @@ inline a3_SpatialPose* a3spatialPoseOpTriangular(a3_SpatialPose* pose_out, a3_Sp
 		pose_out->angles.y = pose0->angles.y * u1 + pose1->angles.y * u2 + pose2->angles.y * u3;
 		pose_out->angles.z = pose0->angles.z * u1 + pose1->angles.z * u2 + pose2->angles.z * u3;
 
-		pose_out->scale.x = powf(pose0->scale.x, u1) * powf(pose1->scale.x, u2) * powf(pose2->scale.x, u3);
-		pose_out->scale.y = powf(pose0->scale.y, u1) * powf(pose1->scale.y, u2) * powf(pose2->scale.y, u3);
-		pose_out->scale.z = powf(pose0->scale.z, u1) * powf(pose1->scale.z, u2) * powf(pose2->scale.z, u3);
+		pose_out->scale.x = (a3real)powf(pose0->scale.x, u1) * (a3real)powf(pose1->scale.x, u2) * (a3real)powf(pose2->scale.x, u3);
+		pose_out->scale.y = (a3real)powf(pose0->scale.y, u1) * (a3real)powf(pose1->scale.y, u2) * (a3real)powf(pose2->scale.y, u3);
+		pose_out->scale.z = (a3real)powf(pose0->scale.z, u1) * (a3real)powf(pose1->scale.z, u2) * (a3real)powf(pose2->scale.z, u3);
 
 		pose_out->translation.x = pose0->translation.x * u1 + pose1->translation.x * u2 + pose2->translation.x * u3;
 		pose_out->translation.y = pose0->translation.y * u1 + pose1->translation.y * u2 + pose2->translation.y * u3;
@@ -249,7 +251,7 @@ inline a3_SpatialPose* a3spatialPoseOpTriangular(a3_SpatialPose* pose_out, a3_Sp
 
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpBiNearest(a3_SpatialPose* pose_out, a3_SpatialPose const* pose00, a3_SpatialPose const* pose01, a3_SpatialPose const* pose10, a3_SpatialPose const* pose11, a3real const u0, a3real const u1, a3real const u)
@@ -259,18 +261,18 @@ inline a3_SpatialPose* a3spatialPoseOpBiNearest(a3_SpatialPose* pose_out, a3_Spa
 		pose_out = a3spatialPoseOpNEAR(pose_out, a3spatialPoseOpNEAR(pose_out, pose00, pose01, u), a3spatialPoseOpNEAR(pose_out, pose10, pose11, u), u);
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpBiLinear(a3_SpatialPose* pose_out, a3_SpatialPose const* pose00, a3_SpatialPose const* pose01, a3_SpatialPose const* pose10, a3_SpatialPose const* pose11, a3real const u0, a3real const u1, a3real const u)
 {
 	if (pose_out && pose00 && pose01 && pose10 && pose11) 
 	{
-		//pose_out = a3spatialPoseOpLERP(pose_out, a3spatialPoseOpLERP(pose_out, pose00, pose01, u0), a3spatialPoseOpLERP(pose_out, pose10, pose11, u0), u1);
+		pose_out = a3spatialPoseOpLERP(pose_out, a3spatialPoseOpLERP(pose_out, pose00, pose01, u0), a3spatialPoseOpLERP(pose_out, pose10, pose11, u0), u1);
 		// Check Slide 34 of interpolation slides
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
 inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* posen1n1, a3_SpatialPose const* posen10, a3_SpatialPose const* posen11, a3_SpatialPose const* posen12, a3_SpatialPose const* pose0n1, a3_SpatialPose const* pose00, a3_SpatialPose const* pose01, a3_SpatialPose const* pose02, a3_SpatialPose const* pose1n1, a3_SpatialPose const* pose10, a3_SpatialPose const* pose11, a3_SpatialPose const* pose12, a3_SpatialPose const* pose2n1, a3_SpatialPose const* pose20, a3_SpatialPose const* pose21, a3_SpatialPose const* pose22, a3real const un1, a3real const u0, a3real const u1, a3real const u2, a3real const u)
@@ -281,10 +283,15 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out, a3_Spati
 		&& pose1n1 && pose10 && pose11 && pose12
 		&& pose2n1 && pose20 && pose21 && pose22)
 	{
-		
+		pose_out = a3spatialPoseOpCUBIC(pose_out,
+			a3spatialPoseOpCUBIC(pose_out, posen1n1, posen10, posen11, posen12, un1),
+			a3spatialPoseOpCUBIC(pose_out, pose0n1, pose00, pose01, pose02, u0),
+			a3spatialPoseOpCUBIC(pose_out, pose1n1, pose10, pose11, pose12, u1),
+			a3spatialPoseOpCUBIC(pose_out, pose2n1, pose20, pose21, pose22, u2),
+			u);
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -340,7 +347,7 @@ inline a3_SpatialPose a3spatialPoseDOpInvert(a3_SpatialPose pose_in)
 	return out;
 }
 
-inline a3_SpatialPose a3spatialPoseDOpConcat(const a3_SpatialPose lhs, const a3_SpatialPose rhs)
+inline a3_SpatialPose a3spatialPoseDOpConcat(a3_SpatialPose const lhs, a3_SpatialPose const rhs)
 {
 	a3_SpatialPose out;
 	out.angles.x = lhs.angles.x + rhs.angles.x;
@@ -380,7 +387,7 @@ inline a3_SpatialPose a3spatialPoseDOpCUBIC(a3_SpatialPose const posen1, a3_Spat
 	return result;
 }
 
-inline a3_SpatialPose a3spatialPoseDOpDeconcat(const a3_SpatialPose lhs, const a3_SpatialPose rhs)
+inline a3_SpatialPose a3spatialPoseDOpDeconcat(a3_SpatialPose const lhs, a3_SpatialPose const rhs)
 {
 	a3_SpatialPose result = { 0 };
 
@@ -435,7 +442,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpIdentity(a3_HierarchyPose* pose_out, c
 		return pose_out;
 	}
 	// done
-	return -1;
+	return 0;
 }
 
 inline a3_HierarchyPose* a3hierarchyPoseOpConstruct(a3_HierarchyPose* pose_out, a3vec3 rotation, a3vec3 scale, a3vec3 translation, const a3ui32 nodeCount)
@@ -447,10 +454,10 @@ inline a3_HierarchyPose* a3hierarchyPoseOpConstruct(a3_HierarchyPose* pose_out, 
 			a3spatialPoseOpConstruct(pose_out->pose + i, rotation, scale, translation);
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
-inline a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose_in, const a3ui32 nodeCount)
+inline a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose_in, const a3ui32 nodeCount)
 {
 	if (pose_out && nodeCount)
 	{
@@ -459,7 +466,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3_Hi
 			a3spatialPoseOpCopy(pose_out->pose + i, pose_in->pose + i);
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
 inline a3_HierarchyPose* a3hierarchyPoseOpInvert(a3_HierarchyPose* pose_out, const a3ui32 nodeCount)
@@ -471,10 +478,10 @@ inline a3_HierarchyPose* a3hierarchyPoseOpInvert(a3_HierarchyPose* pose_out, con
 			a3spatialPoseOpInvert(pose_out->pose + i);
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
-inline a3_HierarchyPose* a3hierarchyPoseOpConcat(a3_HierarchyPose* pose_out, const a3_HierarchyPose* lhs, const a3_HierarchyPose* rhs, const a3ui32 nodeCount)
+inline a3_HierarchyPose* a3hierarchyPoseOpConcat(a3_HierarchyPose* pose_out, a3_HierarchyPose const* lhs, a3_HierarchyPose const* rhs, const a3ui32 nodeCount)
 {
 	if (pose_out && nodeCount)
 	{
@@ -483,7 +490,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpConcat(a3_HierarchyPose* pose_out, con
 			a3spatialPoseOpConcat(pose_out->pose + i, lhs->pose + i, rhs->pose + i);
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
 inline a3_HierarchyPose* a3hierarchyPoseOpNEAR(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3real const u, const a3ui32 nodeCount)
@@ -495,7 +502,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpNEAR(a3_HierarchyPose* pose_out, a3_Hi
 			a3spatialPoseOpNEAR(pose_out->pose + i, pose0->pose + i, pose1->pose + i, u);
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
 // pointer-based LERP operation for hierarchical pose
@@ -508,7 +515,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3_Hi
 			a3spatialPoseOpLERP(pose_out->pose + i, pose0->pose + i, pose1->pose + i, u);
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
 inline a3_HierarchyPose* a3hierarchyPoseOpCUBIC(a3_HierarchyPose* pose_out, a3_HierarchyPose const* posen1, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3_HierarchyPose const* pose2, a3real const u, const a3ui32 nodeCount)
@@ -520,10 +527,10 @@ inline a3_HierarchyPose* a3hierarchyPoseOpCUBIC(a3_HierarchyPose* pose_out, a3_H
 			a3spatialPoseOpCUBIC(pose_out->pose + i, posen1->pose + i, pose0->pose + i, pose1->pose + i, pose2->pose + i, u);
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
-inline a3_HierarchyPose* a3hierarchyPoseOpDeconcat(a3_HierarchyPose* pose_out, const a3_HierarchyPose* lhs, const a3_HierarchyPose* rhs, const a3ui32 nodeCount)
+inline a3_HierarchyPose* a3hierarchyPoseOpDeconcat(a3_HierarchyPose* pose_out, a3_HierarchyPose const* lhs, a3_HierarchyPose const* rhs, const a3ui32 nodeCount)
 {
 	if (pose_out && nodeCount)
 	{
@@ -532,7 +539,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpDeconcat(a3_HierarchyPose* pose_out, c
 			a3spatialPoseOpDeconcat(pose_out->pose + i, lhs->pose + i, rhs->pose + i);
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
 inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3real const u, const a3ui32 nodeCount)
@@ -544,7 +551,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3re
 			a3spatialPoseOpScale(pose_out->pose + i, u);
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
 inline a3_HierarchyPose* a3hierarchyPoseOpTriangular(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3_HierarchyPose const* pose2, a3real const u1, a3real const u2, const a3ui32 nodeCount)
@@ -556,7 +563,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpTriangular(a3_HierarchyPose* pose_out,
 			a3spatialPoseOpTriangular(pose_out->pose + i, pose0->pose + i, pose1->pose + i, pose2->pose + i, u1, u2);
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
 inline a3_HierarchyPose* a3hierarchyPoseOpBiNearest(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose00, a3_HierarchyPose const* pose01, a3_HierarchyPose const* pose10, a3_HierarchyPose const* pose11, a3real const u0, a3real const u1, a3real const u, const a3ui32 nodeCount)
@@ -568,7 +575,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiNearest(a3_HierarchyPose* pose_out, 
 			a3spatialPoseOpBiNearest(pose_out->pose + i, pose00->pose + i, pose01->pose + i, pose10->pose + i, pose11->pose + i, u0, u1, u);
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
 inline a3_HierarchyPose* a3hierarchyPoseOpBiLinear(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose00, a3_HierarchyPose const* pose01, a3_HierarchyPose const* pose10, a3_HierarchyPose const* pose11, a3real const u0, a3real const u1, a3real const u, const a3ui32 nodeCount)
@@ -580,7 +587,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiLinear(a3_HierarchyPose* pose_out, a
 			a3spatialPoseOpBiLinear(pose_out->pose + i, pose00->pose + i, pose01->pose + i, pose10->pose + i, pose11->pose + i, u0, u1, u);
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
 inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out, a3_HierarchyPose const* posen1n1, a3_HierarchyPose const* posen10, a3_HierarchyPose const* posen11, a3_HierarchyPose const* posen12, a3_HierarchyPose const* pose0n1, a3_HierarchyPose const* pose00, a3_HierarchyPose const* pose01, a3_HierarchyPose const* pose02, a3_HierarchyPose const* pose1n1, a3_HierarchyPose const* pose10, a3_HierarchyPose const* pose11, a3_HierarchyPose const* pose12, a3_HierarchyPose const* pose2n1, a3_HierarchyPose const* pose20, a3_HierarchyPose const* pose21, a3_HierarchyPose const* pose22, a3real const un1, a3real const u0, a3real const u1, a3real const u2, a3real const u, const a3ui32 nodeCount)
@@ -597,7 +604,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out, a3
 				un1, u0, u1, u2, u);
 		return pose_out;
 	}
-	return -1;
+	return 0;
 }
 
 //-----------------------------------------------------------------------------
