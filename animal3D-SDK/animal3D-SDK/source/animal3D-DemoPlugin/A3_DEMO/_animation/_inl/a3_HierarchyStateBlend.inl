@@ -258,7 +258,14 @@ inline a3_SpatialPose* a3spatialPoseOpBiNearest(a3_SpatialPose* pose_out, a3_Spa
 {
 	if(pose_out && pose00 && pose01 && pose10 && pose11)
 	{
-		pose_out = a3spatialPoseOpNEAR(pose_out, a3spatialPoseOpNEAR(pose_out, pose00, pose01, u), a3spatialPoseOpNEAR(pose_out, pose10, pose11, u), u);
+		a3_SpatialPose* lhs, * rhs;
+		lhs = (a3_SpatialPose*)malloc(sizeof(a3_SpatialPose));
+		rhs = (a3_SpatialPose*)malloc(sizeof(a3_SpatialPose));
+
+		pose_out = a3spatialPoseOpNEAR(pose_out, a3spatialPoseOpNEAR(lhs, pose00, pose01, u0), a3spatialPoseOpNEAR(rhs, pose10, pose11, u1), u);
+		free(lhs);
+		free(rhs);
+
 		return pose_out;
 	}
 	return 0;
@@ -268,7 +275,15 @@ inline a3_SpatialPose* a3spatialPoseOpBiLinear(a3_SpatialPose* pose_out, a3_Spat
 {
 	if (pose_out && pose00 && pose01 && pose10 && pose11) 
 	{
-		pose_out = a3spatialPoseOpLERP(pose_out, a3spatialPoseOpLERP(pose_out, pose00, pose01, u0), a3spatialPoseOpLERP(pose_out, pose10, pose11, u0), u1);
+		a3_SpatialPose* lhs, * rhs;
+		lhs = (a3_SpatialPose*)malloc(sizeof(a3_SpatialPose));
+		rhs = (a3_SpatialPose*)malloc(sizeof(a3_SpatialPose));
+
+		pose_out = a3spatialPoseOpLERP(pose_out, a3spatialPoseOpLERP(lhs, pose00, pose01, u0), a3spatialPoseOpLERP(rhs, pose10, pose11, u0), u1);
+		
+		free(lhs);
+		free(rhs);
+
 		// Check Slide 34 of interpolation slides
 		return pose_out;
 	}
@@ -283,12 +298,23 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out, a3_Spati
 		&& pose1n1 && pose10 && pose11 && pose12
 		&& pose2n1 && pose20 && pose21 && pose22)
 	{
+		a3_SpatialPose* out0, * out1, * out2, * out3;
+		out0 = (a3_SpatialPose*)malloc(sizeof(a3_SpatialPose));
+		out1 = (a3_SpatialPose*)malloc(sizeof(a3_SpatialPose));
+		out2 = (a3_SpatialPose*)malloc(sizeof(a3_SpatialPose));
+		out3 = (a3_SpatialPose*)malloc(sizeof(a3_SpatialPose));
+
 		pose_out = a3spatialPoseOpCUBIC(pose_out,
-			a3spatialPoseOpCUBIC(pose_out, posen1n1, posen10, posen11, posen12, un1),
-			a3spatialPoseOpCUBIC(pose_out, pose0n1, pose00, pose01, pose02, u0),
-			a3spatialPoseOpCUBIC(pose_out, pose1n1, pose10, pose11, pose12, u1),
-			a3spatialPoseOpCUBIC(pose_out, pose2n1, pose20, pose21, pose22, u2),
+			a3spatialPoseOpCUBIC(out0, posen1n1, posen10, posen11, posen12, un1),
+			a3spatialPoseOpCUBIC(out1, pose0n1, pose00, pose01, pose02, u0),
+			a3spatialPoseOpCUBIC(out2, pose1n1, pose10, pose11, pose12, u1),
+			a3spatialPoseOpCUBIC(out3, pose2n1, pose20, pose21, pose22, u2),
 			u);
+
+		free(out0);
+		free(out1); 
+		free(out2);
+		free(out3);
 		return pose_out;
 	}
 	return 0;
@@ -334,7 +360,7 @@ inline a3_SpatialPose a3spatialPoseDOpCopy(a3_SpatialPose pose_in)
 
 inline a3_SpatialPose a3spatialPoseDOpInvert(a3_SpatialPose pose_in)
 {
-	a3_SpatialPose out;
+	a3_SpatialPose out = { 0 };
 	out.angles.x = -pose_in.angles.x;
 	out.angles.y = -pose_in.angles.y;
 	out.angles.z = -pose_in.angles.z;
@@ -374,7 +400,16 @@ inline a3_SpatialPose a3spatialPoseDOpNEAR(a3_SpatialPose const pose0, a3_Spatia
 inline a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u)
 {
 	a3_SpatialPose result = { 0 };
-	// ...
+
+	result.angles.x = a3lerp(pose0.angles.x, pose1.angles.x, u);
+	result.angles.y = a3lerp(pose0.angles.y, pose1.angles.y, u);
+	result.angles.z = a3lerp(pose0.angles.z, pose1.angles.z, u);
+	result.scale.x = (a3real)pow(pose1.scale.x / pose0.scale.x, u) * pose0.scale.x;
+	result.scale.y = (a3real)pow(pose1.scale.y / pose0.scale.y, u) * pose0.scale.y;
+	result.scale.z = (a3real)pow(pose1.scale.y / pose0.scale.y, u) * pose0.scale.y;
+	result.translation.x = a3lerp(pose0.translation.x, pose1.translation.x, u);
+	result.translation.y = a3lerp(pose0.translation.y, pose1.translation.y, u);
+	result.translation.z = a3lerp(pose0.translation.z, pose1.translation.z, u);
 
 	// done
 	return result;
@@ -382,51 +417,75 @@ inline a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose const pose0, a3_Spatia
 
 inline a3_SpatialPose a3spatialPoseDOpCUBIC(a3_SpatialPose const posen1, a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3_SpatialPose const pose2, a3real const u)
 {
-	a3_SpatialPose result = { 0 };
-
-	return result;
+	return a3spatialPoseDOpScale(
+		a3spatialPoseDOpConcat(
+			a3spatialPoseDOpConcat(
+				a3spatialPoseDOpScale(posen1, -u + 2 * u * u - u * u * u),
+				a3spatialPoseDOpScale(pose0, 2 - 5 * u * u + 3 * u * u * u)),
+			a3spatialPoseDOpConcat(
+				a3spatialPoseDOpScale(pose1, u + 4 * u * u - 3u * u * u),
+				a3spatialPoseDOpScale(pose2, -u * u + u * u * u))), 0.5f);
 }
 
 inline a3_SpatialPose a3spatialPoseDOpDeconcat(a3_SpatialPose const lhs, a3_SpatialPose const rhs)
 {
 	a3_SpatialPose result = { 0 };
+	result.angles.x = lhs.angles.x - rhs.angles.x;
+	result.angles.y = lhs.angles.y - rhs.angles.y;
+	result.angles.z = lhs.angles.z - rhs.angles.z;
+	result.scale.x = lhs.scale.x / rhs.scale.x;
+	result.scale.y = lhs.scale.y / rhs.scale.y;
+	result.scale.z = lhs.scale.z / rhs.scale.z;
+	result.translation.x = lhs.translation.x - rhs.translation.x;
+	result.translation.y = lhs.translation.y - rhs.translation.y;
+	result.translation.z = lhs.translation.z - rhs.translation.z;
 
 	return result;
 }
 
-inline a3_SpatialPose a3spatialPoseDOpScale(a3real const u)
+inline a3_SpatialPose a3spatialPoseDOpScale(a3_SpatialPose lhs, a3real const u)
 {
-	a3_SpatialPose result = { 0 };
+	a3_SpatialPose result = lhs;
+
+	result.angles.x *= u;
+	result.angles.y *= u;
+	result.angles.z *= u;
+	result.scale.x = (a3real)powf(lhs.scale.x, u);
+	result.scale.y = (a3real)powf(lhs.scale.y, u);
+	result.scale.z = (a3real)powf(lhs.scale.z, u);
+	result.translation.x *= u;
+	result.translation.y *= u;
+	result.translation.z *= u;
+
 
 	return result;
 }
 
 inline a3_SpatialPose a3spatialPoseDOpTriangular(a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3_SpatialPose const pose2, a3real const u1, a3real const u2)
 {
-	a3_SpatialPose result = { 0 };
+	a3real u3 = 1 - u2 - u1;
 
-	return result;
+	return a3spatialPoseDOpConcat(a3spatialPoseDOpConcat(a3spatialPoseDOpScale(pose0, u1), a3spatialPoseDOpScale(pose1, u2)), a3spatialPoseDOpScale(pose2, u3));
 }
 
 inline a3_SpatialPose a3spatialPoseDOpBiNearest(a3_SpatialPose const pose00, a3_SpatialPose const pose01, a3_SpatialPose const pose10, a3_SpatialPose const pose11, a3real const u0, a3real const u1, a3real const u)
 {
-	a3_SpatialPose result = { 0 };
-
-	return result;
+	return a3spatialPoseDOpNEAR(a3spatialPoseDOpNEAR(pose00, pose01, u0), a3spatialPoseDOpNEAR(pose10, pose11, u1), u);
 }
 
 inline a3_SpatialPose a3spatialPoseDOpBiLinear(a3_SpatialPose const pose00, a3_SpatialPose const pose01, a3_SpatialPose const pose10, a3_SpatialPose const pose11, a3real const u0, a3real const u1, a3real const u)
 {
-	a3_SpatialPose result = { 0 };
-
-	return result;
+	return a3spatialPoseDOpLERP(a3spatialPoseDOpLERP(pose00, pose01, u0), a3spatialPoseDOpLERP(pose10, pose11, u0), u1);
 }
 
 inline a3_SpatialPose a3spatialPoseDOpBiCubic(a3_SpatialPose const posen1n1, a3_SpatialPose const posen10, a3_SpatialPose const posen11, a3_SpatialPose const posen12, a3_SpatialPose const pose0n1, a3_SpatialPose const pose00, a3_SpatialPose const pose01, a3_SpatialPose const pose02, a3_SpatialPose const pose1n1, a3_SpatialPose const pose10, a3_SpatialPose const pose11, a3_SpatialPose const pose12, a3_SpatialPose const pose2n1, a3_SpatialPose const pose20, a3_SpatialPose const pose21, a3_SpatialPose const pose22, a3real const un1, a3real const u0, a3real const u1, a3real const u2, a3real const u)
 {
-	a3_SpatialPose result = { 0 };
-
-	return result;
+	return a3spatialPoseDOpCUBIC(
+		a3spatialPoseDOpCUBIC(posen1n1, posen10, posen11, posen12, un1),
+		a3spatialPoseDOpCUBIC(pose0n1, pose00, pose01, pose02, u0),
+		a3spatialPoseDOpCUBIC(pose1n1, pose10, pose11, pose12, u1),
+		a3spatialPoseDOpCUBIC(pose2n1, pose20, pose21, pose22, u2),
+		u);
 }
 
 //-----------------------------------------------------------------------------

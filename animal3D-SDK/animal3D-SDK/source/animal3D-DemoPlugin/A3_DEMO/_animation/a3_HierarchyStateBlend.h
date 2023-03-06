@@ -131,7 +131,7 @@ a3_SpatialPose a3spatialPoseDOpCUBIC(a3_SpatialPose const posen1, a3_SpatialPose
 a3_SpatialPose a3spatialPoseDOpDeconcat(a3_SpatialPose const lhs, a3_SpatialPose const rhs);
 
 // data-based multiplication / scale operation for single spatial pose
-a3_SpatialPose a3spatialPoseDOpScale(a3real const u);
+a3_SpatialPose a3spatialPoseDOpScale(a3_SpatialPose lhs, a3real const u);
 
 // data-based triangular operation for single spatial pose
 a3_SpatialPose a3spatialPoseDOpTriangular(a3_SpatialPose const pose0,
