@@ -325,7 +325,20 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out, a3_Spati
 // data-based reset/identity
 inline a3_SpatialPose a3spatialPoseDOpIdentity()
 {
-	a3_SpatialPose const result = { a3mat4_identity /*, ...*/ };
+	a3_SpatialPose result = { a3mat4_identity /*, ...*/ };
+	result.angles.x =0;
+	result.angles.y =0;
+	result.angles.z =0;
+
+	result.scale.x = 1;
+	result.scale.y = 1;
+	result.scale.z = 1;
+
+	result.translation.x = 0;
+	result.translation.y = 0;
+	result.translation.z = 0;
+
+
 	return result;
 }
 
