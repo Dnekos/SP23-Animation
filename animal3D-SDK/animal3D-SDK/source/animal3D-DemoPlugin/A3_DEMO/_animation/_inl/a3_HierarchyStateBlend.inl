@@ -82,9 +82,12 @@ inline a3_SpatialPose* a3spatialPoseOpInvert(a3_SpatialPose* pose_in)
 		pose_in->angles.x = -pose_in->angles.x;
 		pose_in->angles.y = -pose_in->angles.y;
 		pose_in->angles.z = -pose_in->angles.z;
-		pose_in->scale.x = 1 / pose_in->scale.x;
-		pose_in->scale.y = 1 / pose_in->scale.y;
-		pose_in->scale.z = 1 / pose_in->scale.z;
+		if (pose_in->scale.x != 0)
+			pose_in->scale.x = 1 / pose_in->scale.x;
+		if (pose_in->scale.y != 0)
+			pose_in->scale.y = 1 / pose_in->scale.y;
+		if (pose_in->scale.z != 0)
+			pose_in->scale.z = 1 / pose_in->scale.z;
 		pose_in->translation.x = -pose_in->translation.x;
 		pose_in->translation.y = -pose_in->translation.y;
 		pose_in->translation.z = -pose_in->translation.z;
@@ -116,7 +119,7 @@ inline a3_SpatialPose* a3spatialPoseOpNEAR(a3_SpatialPose* pose_out, a3_SpatialP
 {
 	if (pose_out && pose0 && pose1)
 	{
-		if (u < 5)
+		if (u < 0.5f)
 		{
 			a3spatialPoseOpCopy(pose_out, pose0);
 			return pose_out;
@@ -135,17 +138,16 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 {
 	if (pose_out && pose0 && pose1)
 	{
-		//pose_out = a3spatialPoseOpConcat(pose_out, a3spatialPoseOpScale(a3spatialPoseOpConcat(pose_out, pose1, a3spatialPoseOpInvert(pose0)), u), pose0);
-		// 
-		// done
-		//return pose_out;
-
 		pose_out->angles.x =		a3lerp(pose0->angles.x, pose1->angles.x, u);
 		pose_out->angles.y =		a3lerp(pose0->angles.y, pose1->angles.y, u);
 		pose_out->angles.z =		a3lerp(pose0->angles.z, pose1->angles.z, u);
-		pose_out->scale.x =			(a3real)pow(pose1->scale.x / pose0->scale.x, u) * pose0->scale.x;
-		pose_out->scale.y =			(a3real)pow(pose1->scale.y / pose0->scale.y, u) * pose0->scale.y;
-		pose_out->scale.z =			(a3real)pow(pose1->scale.y / pose0->scale.y, u) * pose0->scale.y;
+		// validate denominators
+		if (pose0->scale.x != 0)
+			pose_out->scale.x =			(a3real)pow(pose1->scale.x / pose0->scale.x, u) * pose0->scale.x;
+		if (pose0->scale.y != 0)
+			pose_out->scale.y =			(a3real)pow(pose1->scale.y / pose0->scale.y, u) * pose0->scale.y;
+		if (pose0->scale.z != 0)
+			pose_out->scale.z =			(a3real)pow(pose1->scale.z / pose0->scale.z, u) * pose0->scale.z;
 		pose_out->translation.x =	a3lerp(pose0->translation.x, pose1->translation.x, u);
 		pose_out->translation.y =	a3lerp(pose0->translation.y, pose1->translation.y, u);
 		pose_out->translation.z =	a3lerp(pose0->translation.z, pose1->translation.z, u);
@@ -197,9 +199,12 @@ inline a3_SpatialPose* a3spatialPoseOpDeconcat(a3_SpatialPose* pose_out, a3_Spat
 		pose_out->angles.x = lhs->angles.x - rhs->angles.x;
 		pose_out->angles.y = lhs->angles.y - rhs->angles.y;
 		pose_out->angles.z = lhs->angles.z - rhs->angles.z;
-		pose_out->scale.x = lhs->scale.x / rhs->scale.x;
-		pose_out->scale.y = lhs->scale.y / rhs->scale.y;
-		pose_out->scale.z = lhs->scale.z / rhs->scale.z;
+		if (rhs->scale.x != 0)
+			pose_out->scale.x = lhs->scale.x / rhs->scale.x;
+		if (rhs->scale.y != 0)
+			pose_out->scale.y = lhs->scale.y / rhs->scale.y;
+		if (rhs->scale.z != 0)
+			pose_out->scale.z = lhs->scale.z / rhs->scale.z;
 		pose_out->translation.x = lhs->translation.x - rhs->translation.x;
 		pose_out->translation.y = lhs->translation.y - rhs->translation.y;
 		pose_out->translation.z = lhs->translation.z - rhs->translation.z;
@@ -377,9 +382,12 @@ inline a3_SpatialPose a3spatialPoseDOpInvert(a3_SpatialPose pose_in)
 	out.angles.x = -pose_in.angles.x;
 	out.angles.y = -pose_in.angles.y;
 	out.angles.z = -pose_in.angles.z;
-	out.scale.x = 1 / pose_in.scale.x;
-	out.scale.y = 1 / pose_in.scale.y;
-	out.scale.z = 1 / pose_in.scale.z;
+	if (pose_in.scale.x != 0)
+		out.scale.x = 1 / pose_in.scale.x;
+	if (pose_in.scale.y != 0)
+		out.scale.y = 1 / pose_in.scale.y;
+	if (pose_in.scale.z != 0)
+		out.scale.z = 1 / pose_in.scale.z;
 	out.translation.x = -pose_in.translation.x;
 	out.translation.y = -pose_in.translation.y;
 	out.translation.z = -pose_in.translation.z;
@@ -403,7 +411,7 @@ inline a3_SpatialPose a3spatialPoseDOpConcat(a3_SpatialPose const lhs, a3_Spatia
 
 inline a3_SpatialPose a3spatialPoseDOpNEAR(a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u)
 {
-	if (u < 5)
+	if (u < 0.5f)
 		return pose0;
 	else
 		return pose1;
@@ -417,9 +425,13 @@ inline a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose const pose0, a3_Spatia
 	result.angles.x = a3lerp(pose0.angles.x, pose1.angles.x, u);
 	result.angles.y = a3lerp(pose0.angles.y, pose1.angles.y, u);
 	result.angles.z = a3lerp(pose0.angles.z, pose1.angles.z, u);
-	result.scale.x = (a3real)pow(pose1.scale.x / pose0.scale.x, u) * pose0.scale.x;
-	result.scale.y = (a3real)pow(pose1.scale.y / pose0.scale.y, u) * pose0.scale.y;
-	result.scale.z = (a3real)pow(pose1.scale.y / pose0.scale.y, u) * pose0.scale.y;
+
+	if (pose0.scale.x != 0)
+		result.scale.x = (a3real)pow(pose1.scale.x / pose0.scale.x, u) * pose0.scale.x;
+	if (pose0.scale.y != 0)
+		result.scale.y = (a3real)pow(pose1.scale.y / pose0.scale.y, u) * pose0.scale.y;
+	if (pose0.scale.z != 0)
+		result.scale.z = (a3real)pow(pose1.scale.z / pose0.scale.z, u) * pose0.scale.z;
 	result.translation.x = a3lerp(pose0.translation.x, pose1.translation.x, u);
 	result.translation.y = a3lerp(pose0.translation.y, pose1.translation.y, u);
 	result.translation.z = a3lerp(pose0.translation.z, pose1.translation.z, u);
@@ -446,9 +458,12 @@ inline a3_SpatialPose a3spatialPoseDOpDeconcat(a3_SpatialPose const lhs, a3_Spat
 	result.angles.x = lhs.angles.x - rhs.angles.x;
 	result.angles.y = lhs.angles.y - rhs.angles.y;
 	result.angles.z = lhs.angles.z - rhs.angles.z;
-	result.scale.x = lhs.scale.x / rhs.scale.x;
-	result.scale.y = lhs.scale.y / rhs.scale.y;
-	result.scale.z = lhs.scale.z / rhs.scale.z;
+	if (rhs.scale.x != 0)
+		result.scale.x = lhs.scale.x / rhs.scale.x;
+	if (rhs.scale.y != 0)
+		result.scale.y = lhs.scale.y / rhs.scale.y;
+	if (rhs.scale.z != 0)
+		result.scale.z = lhs.scale.z / rhs.scale.z;
 	result.translation.x = lhs.translation.x - rhs.translation.x;
 	result.translation.y = lhs.translation.y - rhs.translation.y;
 	result.translation.z = lhs.translation.z - rhs.translation.z;
