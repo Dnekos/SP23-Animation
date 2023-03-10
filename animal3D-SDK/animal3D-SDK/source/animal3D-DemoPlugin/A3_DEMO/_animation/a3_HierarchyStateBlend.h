@@ -71,6 +71,9 @@ a3_SpatialPose* a3spatialPoseOpNEAR(a3_SpatialPose* pose_out, a3_SpatialPose con
 a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, 
 	a3real const u);
 
+a3_SpatialPose* a3spatialPoseOpSmoothStep(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1,
+	a3real const u);
+
 // pointer-based cubic operation for single spatial pose
 a3_SpatialPose* a3spatialPoseOpCUBIC(a3_SpatialPose* pose_out, a3_SpatialPose const* posen1, a3_SpatialPose const* pose0, 
 	a3_SpatialPose const* pose1, a3_SpatialPose const* pose2, a3real const u);
@@ -82,6 +85,8 @@ a3_SpatialPose* a3spatialPoseOpDeconcat(a3_SpatialPose* pose_out, a3_SpatialPose
 
 // pointer-based multiplication / scale operation for single spatial pose
 a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3real const u);
+
+a3_SpatialPose* a3spatialPoseOpDescale(a3_SpatialPose* pose_out, a3real const u);
 
 // pointer-based triangular operation for single spatial pose
 a3_SpatialPose* a3spatialPoseOpTriangular(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0,
@@ -191,6 +196,9 @@ a3_HierarchyPose* a3hierarchyPoseOpNEAR(a3_HierarchyPose* pose_out, a3_Hierarchy
 a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, 
 	a3real const u, const a3ui32 nodeCount);
 
+a3_HierarchyPose* a3hierarchyPoseOpSmoothStep(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1,
+	a3real const u, const a3ui32 nodeCount);
+
 // pointer-based cubic operation for hierarchical pose
 a3_HierarchyPose* a3hierarchyPoseOpCUBIC(a3_HierarchyPose* pose_out, a3_HierarchyPose const* posen1, a3_HierarchyPose const* pose0,
 	a3_HierarchyPose const* pose1, a3_HierarchyPose const* pose2, a3real const u, const a3ui32 nodeCount);
@@ -202,6 +210,8 @@ a3_HierarchyPose* a3hierarchyPoseOpDeconcat(a3_HierarchyPose* pose_out, a3_Hiera
 
 // pointer-based multiplication / scale operation for hierarchical pose
 a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3real const u, const a3ui32 nodeCount);
+
+a3_HierarchyPose* a3hierarchyPoseOpDescale(a3_HierarchyPose* pose_out, a3real const u, const a3ui32 nodeCount);
 
 // pointer-based triangular operation for hierarchical pose
 a3_HierarchyPose* a3hierarchyPoseOpTriangular(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0,
