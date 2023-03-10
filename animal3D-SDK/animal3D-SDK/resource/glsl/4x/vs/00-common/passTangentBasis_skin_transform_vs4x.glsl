@@ -22,13 +22,35 @@
 	Calculate and pass tangent basis with skinning.
 */
 
-#version 450
+#version 450 core
 
-layout (location = 0) in vec4 aPosition;
-layout (location = 2) in vec4 aNormal;
+layout (location = 0) in vec4 aPosition0;
+layout (location = 2) in vec4 aNormal0;
 layout (location = 8) in vec4 aTexcoord;
-layout (location = 10) in vec4 aTangent;
-layout (location = 11) in vec4 aBitangent;
+layout (location = 10) in vec4 aTangent0;
+layout (location = 11) in vec4 aBitangent0;
+
+layout (location = 1) in vec4 aBlendWeight; // "w"
+layout (location = 7) in ivec4 aBlendIndex; // "j"
+
+#define MAX_BONES 128
+uniform ubTransformBlend {
+	mat4 uBlendMat[MAX_BONES]; // "M"
+	// TODO: bonus round goes here, same idea
+};
+
+vec4 skin_linear(in vec4 v) // v-> v_skin
+{
+	vec4 v_skin = vec4(0.0);
+
+	int i;
+	for (i = 0; i<4; ++i)
+	{
+		v_skin += uBlendMat[aBlendIndex[i]] * (v * aBlendWeight[i]);
+	}
+
+	return v_skin;
+}
 
 uniform mat4 uP;
 uniform mat4 uMV, uMV_nrm;
@@ -46,6 +68,12 @@ void main()
 {
 	// DUMMY OUTPUT: directly assign input position to output position
 //	gl_Position = aPosition;
+
+	vec4 aTangent =normalize(skin_linear(vec4(aTangent0.xyz,0.0)));
+	vec4 aBitangent = normalize(skin_linear(vec4(aBitangent0.xyz,0.0)));
+	vec4 aNormal =normalize(skin_linear(vec4(aNormal0.xyz,0.0)));
+
+	vec4 aPosition = skin_linear(aPosition0);
 
 	vTangentBasis_view = uMV_nrm * mat4(aTangent, aBitangent, aNormal, vec4(0.0));
 	vTangentBasis_view[3] = uMV * aPosition;
