@@ -39,6 +39,13 @@ extern "C"
 #endif	// __cplusplus
 	
 
+typedef a3_SpatialPose* (*a3_SpatialPoseOP) (
+	a3_SpatialPose* pose_out, 
+	a3_SpatialPose* const pose_in[],
+	a3real const param_in[]
+	);
+
+
 //-----------------------------------------------------------------------------
 
 // pointer-based reset/identity operation for single spatial pose
