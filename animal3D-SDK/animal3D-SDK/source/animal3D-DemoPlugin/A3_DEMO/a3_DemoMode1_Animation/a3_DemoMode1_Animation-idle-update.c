@@ -139,7 +139,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			a3mat4_identity.m);
 	}
 
-
+	// EXECUTION
 	// skeletal
 	if (demoState->updateAnimation)
 	{

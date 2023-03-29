@@ -33,6 +33,44 @@
 
 //-----------------------------------------------------------------------------
 
+inline a3_SpatialPose* a3clipOpLERP(a3_HierarchyPoseGroup* const poseGroup, a3_Clip* const clip0, a3_Clip* const clip1, a3real const u)
+{
+	if(poseGroup && clip0 && clip1)
+	{
+		//Perform Key-Pose interpolation on each clip???
+		a3_SpatialPose* pose;
+		a3_SpatialPose* pose0 = poseGroup->hpose->pose + clip0->index;
+		a3_SpatialPose* pose1 = poseGroup->hpose->pose + clip1->index;
+		a3spatialPoseOpLERP(pose, pose0, pose1, u);
+		return pose;
+	}
+	return 0;
+}
+
+inline a3_SpatialPose* a3clipOpADD(a3_HierarchyPoseGroup* const poseGroup, a3_Clip* const clip0, a3_Clip* const clip1)
+{
+	if (poseGroup && clip0 && clip1)
+	{
+		a3_SpatialPose* pose;
+		a3_SpatialPose* pose0 = poseGroup->hpose->pose + clip0->index;
+		a3_SpatialPose* pose1 = poseGroup->hpose->pose + clip1->index;
+		a3spatialPoseOpConcat(pose, pose0, pose1);
+		return pose;
+	}
+	return 0;
+}
+
+inline a3_SpatialPose* a3clipOpSCALE(a3_HierarchyPoseGroup* const poseGroup, a3_Clip* const clip0, a3real const u)
+{
+	if (poseGroup && clip0)
+	{
+		a3_SpatialPose* pose = poseGroup->hpose->pose + clip0->index;
+		a3spatialPoseOpScale(pose, u);
+		return pose;
+	}
+	return 0;
+}
+
 // pointer-based reset/identity operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 {
