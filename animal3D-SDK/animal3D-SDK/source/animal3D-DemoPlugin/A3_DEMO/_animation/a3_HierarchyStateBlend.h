@@ -30,6 +30,8 @@
 
 #include "a3_Kinematics.h"
 
+#include "a3_KeyframeAnimation.h"
+
 
 #ifdef __cplusplus
 extern "C"
@@ -47,15 +49,15 @@ typedef a3_SpatialPose* (*a3_SpatialPoseOP) (
 
 //-----------------------------------------------------------------------------
 
-//Blend Tree
-typedef struct a3_BlendTree {
-	a3real weight;
-	a3ui32 clip_index;
-} a3_BlendTree;
+typedef a3_SpatialPose* (*a3clipOP)(
+	a3_HierarchyPoseGroup* const poseGroup, 
+	a3_Clip* const clip[],
+	a3real const u[]
+	);
 
-a3_SpatialPose* a3clipOpLERP(a3_HierarchyPoseGroup* const poseGroup, a3_Clip* const clip0, a3_Clip* const clip1, a3real const u);
-a3_SpatialPose* a3clipOpADD(a3_HierarchyPoseGroup* const poseGroup, a3_Clip* const clip0, a3_Clip* const clip1);
-a3_SpatialPose* a3clipOpSCALE(a3_HierarchyPoseGroup* const poseGroup, a3_Clip* const clip0, a3real const u);
+a3_SpatialPose* a3clipOpLERP(a3_HierarchyPoseGroup* const poseGroup, a3_Clip* const clip[], a3real const u[]);
+a3_SpatialPose* a3clipOpADD(a3_HierarchyPoseGroup* const poseGroup, a3_Clip* const clip[], a3real const u[]);
+a3_SpatialPose* a3clipOpSCALE(a3_HierarchyPoseGroup* const poseGroup, a3_Clip* const clip[], a3real const u[]);
 
 //-----------------------------------------------------------------------------
 

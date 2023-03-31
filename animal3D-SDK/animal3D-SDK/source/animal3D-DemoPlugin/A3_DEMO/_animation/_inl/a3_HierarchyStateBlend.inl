@@ -33,39 +33,41 @@
 
 //-----------------------------------------------------------------------------
 
-inline a3_SpatialPose* a3clipOpLERP(a3_HierarchyPoseGroup* const poseGroup, a3_Clip* const clip0, a3_Clip* const clip1, a3real const u)
+inline a3_SpatialPose* a3clipOpLERP(a3_HierarchyPoseGroup* const poseGroup, a3_Clip* const clip[], a3real const u[])
 {
-	if(poseGroup && clip0 && clip1)
+	if(poseGroup && clip)
 	{
 		//Perform Key-Pose interpolation on each clip???
 		a3_SpatialPose* pose;
-		a3_SpatialPose* pose0 = poseGroup->hpose->pose + clip0->index;
-		a3_SpatialPose* pose1 = poseGroup->hpose->pose + clip1->index;
-		a3spatialPoseOpLERP(pose, pose0, pose1, u);
+		pose = (a3_SpatialPose*)malloc(sizeof(a3_SpatialPose));
+		a3_SpatialPose* pose0 = poseGroup->hpose->pose + clip[0]->index;
+		a3_SpatialPose* pose1 = poseGroup->hpose->pose + clip[1]->index;
+		a3spatialPoseOpLERP(pose, pose0, pose1, u[0]);
 		return pose;
 	}
 	return 0;
 }
 
-inline a3_SpatialPose* a3clipOpADD(a3_HierarchyPoseGroup* const poseGroup, a3_Clip* const clip0, a3_Clip* const clip1)
+inline a3_SpatialPose* a3clipOpADD(a3_HierarchyPoseGroup* const poseGroup, a3_Clip* const clip[], a3real const u[])
 {
-	if (poseGroup && clip0 && clip1)
+	if (poseGroup && clip)
 	{
 		a3_SpatialPose* pose;
-		a3_SpatialPose* pose0 = poseGroup->hpose->pose + clip0->index;
-		a3_SpatialPose* pose1 = poseGroup->hpose->pose + clip1->index;
+		pose = (a3_SpatialPose*)malloc(sizeof(a3_SpatialPose));
+		a3_SpatialPose* pose0 = poseGroup->hpose->pose + clip[0]->index;
+		a3_SpatialPose* pose1 = poseGroup->hpose->pose + clip[1]->index;
 		a3spatialPoseOpConcat(pose, pose0, pose1);
 		return pose;
 	}
 	return 0;
 }
 
-inline a3_SpatialPose* a3clipOpSCALE(a3_HierarchyPoseGroup* const poseGroup, a3_Clip* const clip0, a3real const u)
+inline a3_SpatialPose* a3clipOpSCALE(a3_HierarchyPoseGroup* const poseGroup, a3_Clip* const clip[], a3real const u[])
 {
-	if (poseGroup && clip0)
+	if (poseGroup && clip)
 	{
-		a3_SpatialPose* pose = poseGroup->hpose->pose + clip0->index;
-		a3spatialPoseOpScale(pose, u);
+		a3_SpatialPose* pose = poseGroup->hpose->pose + clip[0]->index;
+		a3spatialPoseOpScale(pose, u[0]);
 		return pose;
 	}
 	return 0;
@@ -194,7 +196,7 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 	return 0;
 }
 
-a3_SpatialPose* a3spatialPoseOpSmoothStep(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u)
+inline a3_SpatialPose* a3spatialPoseOpSmoothStep(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u)
 {
 	if (pose_out && pose0 && pose1)
 	{
@@ -680,7 +682,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3_Hi
 	return 0;
 }
 
-a3_HierarchyPose* a3hierarchyPoseOpSmoothStep(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1,
+inline a3_HierarchyPose* a3hierarchyPoseOpSmoothStep(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1,
 	a3real const u, const a3ui32 nodeCount)
 {
 	if (pose_out && nodeCount)
@@ -730,7 +732,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3re
 	return 0;
 }
 
-a3_HierarchyPose* a3hierarchyPoseOpDescale(a3_HierarchyPose* pose_out, a3real const u, const a3ui32 nodeCount);
+inline a3_HierarchyPose* a3hierarchyPoseOpDescale(a3_HierarchyPose* pose_out, a3real const u, const a3ui32 nodeCount)
 {
 	if (pose_out && nodeCount)
 	{

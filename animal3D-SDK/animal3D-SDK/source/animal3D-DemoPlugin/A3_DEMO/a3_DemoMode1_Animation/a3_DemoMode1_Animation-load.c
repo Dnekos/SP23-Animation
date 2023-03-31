@@ -473,27 +473,14 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
 		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);
 
-		// DESCRIPTION & BUILD here
+		// DESCRIPTION
 
-		// I think I am taking a wrong approach here. I don't actually think I should be using all three clip controllers at once
-		// I think I should only be using one clip controller and looping through that one controller and calling lerp on all clips
-		// Maybe not all clips, but something to the extent that we are only lerping on one controller.
-		// This helps with the idea that we start as decoupled from a character / clip controller, but can later pass in a specific one.
-		// With all this being said, I am still very confused on what is the correct approach here.
+		a3hierarchyCreate(demoMode->blend_tree, 4, 0);
 
-		// Perform an appropriate interpolation operation to calculate the current delta pose. 
-		// The operation used represents another node in the tree, and the result can be fed into subsequent nodes as input.
-		a3_SpatialPose* currentDelta;
-		currentDelta = a3clipOpLERP(p, demoMode->clipCtrl->clipPool[demoMode->clipCtrl->clipIndex].clip,
-			demoMode->clipCtrl->clipPool[demoMode->clipCtrl->clipIndex - 1].clip, j); //No idea what "u" should be here
-		//Do something with delta
-		currentDelta = a3clipOpLERP(p, demoMode->clipCtrlA->clipPool[demoMode->clipCtrlA->clipIndex].clip,
-			demoMode->clipCtrlA->clipPool[demoMode->clipCtrlA->clipIndex - 1].clip, j); //No idea what "u" should be here
-		//Do something with delta
-		currentDelta = a3clipOpLERP(p, demoMode->clipCtrlB->clipPool[demoMode->clipCtrlB->clipIndex].clip,
-			demoMode->clipCtrlB->clipPool[demoMode->clipCtrlB->clipIndex - 1].clip, j); //No idea what "u" should be here
-		//Do something with all deltas
-		//I think we keep lerping until we get a final pose, which is put through the update to "execute"
+		// BUILD
+		demoMode->blendOP_list[0] = a3clipOpLERP;
+		demoMode->blendOP_list[1] = a3clipOpADD;
+		demoMode->blendOP_list[2] = a3clipOpSCALE;
 	}
 }
 

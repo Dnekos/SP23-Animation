@@ -169,6 +169,13 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3mat4 mvp_joint[128], mvp_bone[128], t_skin[128];
 		a3dualquat dq_skin[128];
 
+		// blend tree *DESCRIPTION
+		a3_Hierarchy blend_tree[1];
+
+		// Operations list
+		a3clipOP blendOP_list[3];
+		
+
 		// control modes
 		a3_DemoMode1_Animation_ControlTarget ctrl_target;
 		a3_DemoMode1_Animation_InputMode ctrl_position, ctrl_rotation;
