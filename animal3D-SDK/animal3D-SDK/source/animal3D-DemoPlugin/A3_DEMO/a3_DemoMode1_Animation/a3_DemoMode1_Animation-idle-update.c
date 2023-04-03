@@ -162,6 +162,18 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
 			(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);
 
+		a3_HierarchyPoseGroup* temp_poses;
+
+		a3hierarchyPoseGroupCreate(temp_poses, demoMode->hierarchy_skel, demoMode->blend_tree->numNodes);
+
+		for (int i = 2; i >=0; i--)
+		{
+			// parameters currently can be gotten by finding which nodes have our current node as a parent.
+			// with a different data structure made custom for this, it might be better done as a linked list, so that we can immediatly grab our parameter, who then grabs his parameter and runs, etc.
+			demoMode->blendOP_list[demoMode->blend_tree->nodes[0].index]();
+			
+		}
+
 		// FK pipeline
 		a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate
 			baseHS->localSpace, // holds base pose

@@ -196,6 +196,28 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 	return 0;
 }
 
+inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose const* pose[], a3real const u[])
+{
+	if (pose_out && pose[0] && pose[1])
+	{
+		pose_out->rotate.x = a3lerp(pose[0]->rotate.x, pose[1]->rotate.x, u[0]);
+		pose_out->rotate.y = a3lerp(pose[0]->rotate.y, pose[1]->rotate.y, u[0]);
+		pose_out->rotate.z = a3lerp(pose[0]->rotate.z, pose[1]->rotate.z, u[0]);
+		// validate denominators
+		if (pose[0]->scale.x != 0)
+			pose_out->scale.x = (a3real)pow(pose[1]->scale.x / pose[0]->scale.x, u[0]) * pose[0]->scale.x;
+		if (pose[0]->scale.y != 0)
+			pose_out->scale.y = (a3real)pow(pose[1]->scale.y / pose[0]->scale.y, u[0]) * pose[0]->scale.y;
+		if (pose[0]->scale.z != 0)
+			pose_out->scale.z = (a3real)pow(pose[1]->scale.z / pose[0]->scale.z, u[0]) * pose[0]->scale.z;
+		pose_out->translate.x = a3lerp(pose[0]->translate.x, pose[1]->translate.x, u[0]);
+		pose_out->translate.y = a3lerp(pose[0]->translate.y, pose[1]->translate.y, u[0]);
+		pose_out->translate.z = a3lerp(pose[0]->translate.z, pose[1]->translate.z, u[0]);
+		return pose_out;
+	}
+	return 0;
+}
+
 inline a3_SpatialPose* a3spatialPoseOpSmoothStep(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u)
 {
 	if (pose_out && pose0 && pose1)
@@ -681,6 +703,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3_Hi
 	}
 	return 0;
 }
+
 
 inline a3_HierarchyPose* a3hierarchyPoseOpSmoothStep(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1,
 	a3real const u, const a3ui32 nodeCount)

@@ -466,12 +466,14 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			a3clipCalculateDuration(demoMode->clipPool, j, fps);
 		}
 
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot");
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_run_f");
 		a3clipControllerInit(demoMode->clipCtrl, "xbot_ctrl", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_pistol");
 		a3clipControllerInit(demoMode->clipCtrlA, "xbot_ctrlA", demoMode->clipPool, j, rate, fps);
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_gangnam");
 		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_samba");
+		a3clipControllerInit(demoMode->clipCtrlC, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);
 
 		// DESCRIPTION
 
@@ -481,6 +483,13 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		demoMode->blendOP_list[0] = a3clipOpLERP;
 		demoMode->blendOP_list[1] = a3clipOpADD;
 		demoMode->blendOP_list[2] = a3clipOpSCALE;
+		demoMode->blendOP_list[3] = a3spatialPoseOpLERP;
+
+		demoMode->blend_tree->nodes[0].index = a3spatialPoseOpLERP;
+		demoMode->blend_tree->nodes[1].index = a3clipOpLERP;
+		demoMode->blend_tree->nodes[1].parentIndex = 0;
+		demoMode->blend_tree->nodes[2].index = a3clipOpLERP;
+		demoMode->blend_tree->nodes[2].parentIndex = 0;
 	}
 }
 
